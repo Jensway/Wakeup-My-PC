@@ -1,7 +1,7 @@
 local uci = require "luci.model.uci".cursor()
 local sys = require "luci.sys"
 
-local m = SimpleForm("woltool", translate("Wakeup-My-PC"),
+local m = SimpleForm("woltool", translate("唤醒电脑"),
 	translate("从列表中选择一台主机，然后点击“唤醒”按钮。主机信息来自 /etc/config/wolhost。"))
 
 m.reset = false
@@ -33,7 +33,8 @@ function m.handle(self, state, data)
 		end
 	end
 
-	return SimpleForm.handle(self, state, data)
+	-- 不调用 SimpleForm.handle，直接返回 true 以避免兼容性问题
+	return true
 end
 
 return m

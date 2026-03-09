@@ -9,6 +9,6 @@ function index()
 	end
 
 	entry({"admin", "services", "woltool"},
-		cbi("woltool"), _("Wakeup-My-PC"), 60).dependent = true
+		cbi("woltool"), _("唤醒电脑"), 60).dependent = true
 end
 
