@@ -1,0 +1,87 @@
+#!/usr/bin/env python3
+
+import socket
+import binascii
+import re
+import sys
+import subprocess
+
+
+def make_magic_packet(mac: str) -> bytes:
+    mac_clean = re.sub(r"[^0-9A-Fa-f]", "", mac)
+    if len(mac_clean) != 12:
+        raise ValueError("MAC 地址格式不正确")
+    mac_bytes = binascii.unhexlify(mac_clean)
+    return b"\xff" * 6 + mac_bytes * 16
+
+
+def get_broadcast_from_iface(iface: str):
+    """
+    通过 `ip -o -4 addr show dev IFACE` 解析出 brd 字段，用作定向广播地址。
+    如果失败则返回 None。
+    """
+    try:
+        out = subprocess.check_output(
+            ["ip", "-o", "-4", "addr", "show", "dev", iface],
+            stderr=subprocess.DEVNULL,
+        ).decode("utf-8", "ignore")
+    except Exception:
+        return None
+
+    # 示例行:
+    # 3: br-lan    inet 192.168.1.1/24 brd 192.168.1.255 scope global br-lan
+    for line in out.splitlines():
+        parts = line.split()
+        if "brd" in parts:
+            idx = parts.index("brd")
+            if idx + 1 < len(parts):
+                return parts[idx + 1]
+    return None
+
+
+def send_wol(mac: str, iface: str = None, repeat: int = 5):
+    packet = make_magic_packet(mac)
+
+    broadcast_ips = set()
+    # 全网广播
+    broadcast_ips.add("255.255.255.255")
+
+    # 如果指定了接口，尝试获取该接口的定向广播地址
+    if iface:
+        brd = get_broadcast_from_iface(iface)
+        if brd:
+            broadcast_ips.add(brd)
+
+    ports = [7, 9]
+
+    for ip in broadcast_ips:
+        for port in ports:
+            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+            try:
+                for _ in range(repeat):
+                    s.sendto(packet, (ip, port))
+            finally:
+                s.close()
+
+
+def main(argv):
+    if len(argv) < 2 or len(argv) > 3:
+        print("用法: wolmt6000 <MAC地址> [接口名]", file=sys.stderr)
+        return 1
+
+    mac = argv[1]
+    iface = argv[2] if len(argv) == 3 else None
+
+    try:
+        send_wol(mac, iface=iface)
+        print(f"已发送魔术包至 {mac}")
+        return 0
+    except Exception as e:
+        print(f"发送失败: {e}", file=sys.stderr)
+        return 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main(sys.argv))
+

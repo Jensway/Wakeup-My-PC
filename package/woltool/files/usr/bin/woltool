@@ -21,8 +21,8 @@ if [ "$1" = "--mac" ]; then
 		usage
 	fi
 
-	echo "通过接口 $IFACE 唤醒 $MAC ..."
-	etherwake -i "$IFACE" "$MAC"
+	echo "通过接口 $IFACE 唤醒 $MAC (Python WOL) ..."
+	wolmt6000 "$MAC" "$IFACE"
 	exit $?
 fi
 
@@ -52,8 +52,8 @@ for section in $SECTIONS; do
 			echo "配置错误: 主机 '$NAME' 没有 MAC" >&2
 			exit 1
 		fi
-		echo "通过接口 $iface 唤醒 $NAME ($mac) ..."
-		etherwake -i "$iface" "$mac"
+		echo "通过接口 $iface 唤醒 $NAME ($mac) (Python WOL) ..."
+		wolmt6000 "$mac" "$iface"
 		exit $?
 	fi
 done
