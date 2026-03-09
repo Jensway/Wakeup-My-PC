@@ -19,11 +19,10 @@ jobs:
           sudo apt-get install -y build-essential libncurses5-dev zlib1g-dev gawk \
             git subversion file flex gettext libssl-dev python3
 
-      - name: Download OpenWrt SDK
+      - name: Download OpenWrt SDK (mediatek/filogic)
         run: |
-          # TODO: 根据你的路由器型号和 OpenWrt 版本，替换为正确的 SDK 地址
-          # 例如: https://downloads.openwrt.org/releases/23.05.3/targets/ramips/mt7621/openwrt-sdk-23.05.3-ramips-mt7621_gcc-12.3.0_musl.Linux-x86_64.tar.xz
-          SDK_URL="https://downloads.openwrt.org/releases/23.05.3/targets/XXXX/XXXX/openwrt-sdk-23.05.3-XXXX-XXXX_gcc-12.3.0_musl.Linux-x86_64.tar.xz"
+          # GL-MT6000 / MT7986 使用 mediatek/filogic 目标，这里选用 OpenWrt 23.05.3 官方 SDK
+          SDK_URL="https://downloads.openwrt.org/releases/23.05.3/targets/mediatek/filogic/openwrt-sdk-23.05.3-mediatek-filogic_gcc-12.3.0_musl.Linux-x86_64.tar.xz"
           wget "$SDK_URL" -O sdk.tar.xz
           tar -Jxf sdk.tar.xz
           SDK_DIR=$(find . -maxdepth 1 -type d -name "openwrt-sdk*" | head -n 1)
