@@ -13,7 +13,6 @@ define Package/woltool
   SECTION:=utils
   CATEGORY:=Utilities
   TITLE:=Simple Wake-on-LAN helper for MT-6000
-  DEPENDS:=+python3-light
 endef
 
 define Package/woltool/description
