@@ -1,0 +1,16 @@
+# 在这里配置需要被唤醒的主机
+# 每个 config host 表示一台电脑：
+#   option name  主机名称（命令行中使用）
+#   option mac   目标主机的 MAC 地址
+#   option iface 可选，发送 WOL 包使用的接口，默认 br-lan
+
+config host
+	option name 'My-PC-1'
+	option mac 'AA:BB:CC:DD:EE:FF'
+	option iface 'br-lan'
+
+config host
+	option name 'My-PC-2'
+	option mac '11:22:33:44:55:66'
+	# iface 未设置时，默认为 br-lan
+

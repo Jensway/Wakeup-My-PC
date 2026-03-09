@@ -1,0 +1,63 @@
+#!/bin/sh
+
+CONFIG="wolhost"
+
+usage() {
+	echo "用法:"
+	echo "  woltool <主机名称>"
+	echo "  woltool --mac <MAC地址> [接口名]" 
+	exit 1
+}
+
+if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
+	usage
+fi
+
+if [ "$1" = "--mac" ]; then
+	MAC="$2"
+	IFACE="${3:-br-lan}"
+
+	if [ -z "$MAC" ]; then
+		usage
+	fi
+
+	echo "通过接口 $IFACE 唤醒 $MAC ..."
+	etherwake -i "$IFACE" "$MAC"
+	exit $?
+fi
+
+NAME="$1"
+
+if [ -z "$NAME" ]; then
+	usage
+fi
+
+# 通过 UCI 在 /etc/config/wolhost 中查找主机
+SECTIONS=$(uci show "$CONFIG" 2>/dev/null | grep "=host" | cut -d'.' -f2 | cut -d'=' -f1)
+
+if [ -z "$SECTIONS" ]; then
+	echo "未找到任何主机配置，请编辑 /etc/config/$CONFIG" >&2
+	exit 1
+fi
+
+for section in $SECTIONS; do
+	sec_name=$(uci get "$CONFIG.$section.name" 2>/dev/null)
+	mac=$(uci get "$CONFIG.$section.mac" 2>/dev/null)
+	iface=$(uci get "$CONFIG.$section.iface" 2>/dev/null)
+
+	[ -z "$iface" ] && iface="br-lan"
+
+	if [ "$sec_name" = "$NAME" ]; then
+		if [ -z "$mac" ]; then
+			echo "配置错误: 主机 '$NAME' 没有 MAC" >&2
+			exit 1
+		fi
+		echo "通过接口 $iface 唤醒 $NAME ($mac) ..."
+		etherwake -i "$iface" "$mac"
+		exit $?
+	fi
+done
+
+echo "未在 /etc/config/$CONFIG 中找到主机 '$NAME'" >&2
+exit 1
+

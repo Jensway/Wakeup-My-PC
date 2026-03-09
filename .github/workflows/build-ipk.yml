@@ -1,0 +1,49 @@
+name: Build OpenWrt IPK (woltool)
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential libncurses5-dev zlib1g-dev gawk \
+            git subversion file flex gettext libssl-dev python3
+
+      - name: Download OpenWrt SDK
+        run: |
+          # TODO: 根据你的路由器型号和 OpenWrt 版本，替换为正确的 SDK 地址
+          # 例如: https://downloads.openwrt.org/releases/23.05.3/targets/ramips/mt7621/openwrt-sdk-23.05.3-ramips-mt7621_gcc-12.3.0_musl.Linux-x86_64.tar.xz
+          SDK_URL="https://downloads.openwrt.org/releases/23.05.3/targets/XXXX/XXXX/openwrt-sdk-23.05.3-XXXX-XXXX_gcc-12.3.0_musl.Linux-x86_64.tar.xz"
+          wget "$SDK_URL" -O sdk.tar.xz
+          tar -Jxf sdk.tar.xz
+          SDK_DIR=$(find . -maxdepth 1 -type d -name "openwrt-sdk*" | head -n 1)
+          mv "$SDK_DIR" openwrt-sdk
+
+      - name: Copy package into SDK
+        run: |
+          cp -r package/woltool openwrt-sdk/package/
+
+      - name: Build package
+        run: |
+          cd openwrt-sdk
+          ./scripts/feeds update -a
+          ./scripts/feeds install -a
+          make defconfig
+          make package/woltool/{clean,compile} V=sc
+
+      - name: Upload IPK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: woltool-ipk
+          path: openwrt-sdk/bin/packages/**/woltool_*.ipk
+
