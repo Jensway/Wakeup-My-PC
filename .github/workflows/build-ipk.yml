@@ -31,18 +31,19 @@ jobs:
       - name: Copy package into SDK
         run: |
           cp -r package/woltool openwrt-sdk/package/
+          cp -r package/luci-app-woltool openwrt-sdk/package/
 
-      - name: Build package
+      - name: Build packages
         run: |
           cd openwrt-sdk
           ./scripts/feeds update -a
           ./scripts/feeds install -a
           make defconfig
-          make package/woltool/{clean,compile} V=sc
+          make package/woltool/{clean,compile} package/luci-app-woltool/{clean,compile} V=sc
 
       - name: Upload IPK artifact
         uses: actions/upload-artifact@v4
         with:
           name: woltool-ipk
-          path: openwrt-sdk/bin/packages/**/woltool_*.ipk
+          path: openwrt-sdk/bin/packages/**/*woltool*.ipk
 

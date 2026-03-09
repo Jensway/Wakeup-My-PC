@@ -1,0 +1,14 @@
+module("luci.controller.woltool", package.seeall)
+
+function index()
+	local fs = require "nixio.fs"
+
+	-- 如果没有配置文件，就不显示菜单
+	if not fs.access("/etc/config/wolhost") then
+		return
+	end
+
+	entry({"admin", "services", "woltool"},
+		cbi("woltool"), _("Wakeup-My-PC"), 60).dependent = true
+end
+
