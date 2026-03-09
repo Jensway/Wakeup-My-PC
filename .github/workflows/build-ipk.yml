@@ -13,6 +13,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Cache OpenWrt SDK
+        id: cache-sdk
+        uses: actions/cache@v4
+        with:
+          path: openwrt-sdk
+          key: openwrt-sdk-23.05.3-mediatek-filogic
+
       - name: Install build dependencies
         run: |
           sudo apt-get update
@@ -20,6 +27,7 @@ jobs:
             git subversion file flex gettext libssl-dev python3
 
       - name: Download OpenWrt SDK (mediatek/filogic)
+        if: steps.cache-sdk.outputs.cache-hit != 'true'
         run: |
           # GL-MT6000 / MT7986 使用 mediatek/filogic 目标，这里选用 OpenWrt 23.05.3 官方 SDK
           SDK_URL="https://downloads.openwrt.org/releases/23.05.3/targets/mediatek/filogic/openwrt-sdk-23.05.3-mediatek-filogic_gcc-12.3.0_musl.Linux-x86_64.tar.xz"
