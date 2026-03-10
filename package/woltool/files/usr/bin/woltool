@@ -5,8 +5,24 @@ CONFIG="wolhost"
 usage() {
 	echo "用法:"
 	echo "  woltool <主机名称>"
-	echo "  woltool --mac <MAC地址> [接口名]" 
+	echo "  woltool --mac <MAC地址> [接口名]"
 	exit 1
+}
+
+# 发送唤醒包：优先 etherwake，回退 wolmt6000
+do_wake() {
+	local mac="$1"
+	local iface="$2"
+
+	if command -v etherwake >/dev/null 2>&1; then
+		echo "通过接口 $iface 唤醒 $mac (etherwake) ..."
+		etherwake -i "$iface" "$mac"
+		return $?
+	fi
+
+	echo "etherwake 不可用，通过接口 $iface 唤醒 $mac (wolmt6000) ..."
+	wolmt6000 "$mac" "$iface"
+	return $?
 }
 
 if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
@@ -21,8 +37,7 @@ if [ "$1" = "--mac" ]; then
 		usage
 	fi
 
-	echo "通过接口 $IFACE 唤醒 $MAC (Python WOL) ..."
-	wolmt6000 "$MAC" "$IFACE"
+	do_wake "$MAC" "$IFACE"
 	exit $?
 fi
 
@@ -32,7 +47,6 @@ if [ -z "$NAME" ]; then
 	usage
 fi
 
-# 通过 UCI 在 /etc/config/wolhost 中查找主机
 SECTIONS=$(uci show "$CONFIG" 2>/dev/null | grep "=host" | cut -d'.' -f2 | cut -d'=' -f1)
 
 if [ -z "$SECTIONS" ]; then
@@ -52,12 +66,10 @@ for section in $SECTIONS; do
 			echo "配置错误: 主机 '$NAME' 没有 MAC" >&2
 			exit 1
 		fi
-		echo "通过接口 $iface 唤醒 $NAME ($mac) (Python WOL) ..."
-		wolmt6000 "$mac" "$iface"
+		do_wake "$mac" "$iface"
 		exit $?
 	fi
 done
 
 echo "未在 /etc/config/$CONFIG 中找到主机 '$NAME'" >&2
 exit 1
-

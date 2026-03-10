@@ -16,10 +16,6 @@ def make_magic_packet(mac: str) -> bytes:
 
 
 def get_broadcast_from_iface(iface: str):
-    """
-    通过 `ip -o -4 addr show dev IFACE` 解析出 brd 字段，用作定向广播地址。
-    如果失败则返回 None。
-    """
     try:
         out = subprocess.check_output(
             ["ip", "-o", "-4", "addr", "show", "dev", iface],
@@ -28,8 +24,6 @@ def get_broadcast_from_iface(iface: str):
     except Exception:
         return None
 
-    # 示例行:
-    # 3: br-lan    inet 192.168.1.1/24 brd 192.168.1.255 scope global br-lan
     for line in out.splitlines():
         parts = line.split()
         if "brd" in parts:
@@ -43,10 +37,8 @@ def send_wol(mac: str, iface: str = None, repeat: int = 5):
     packet = make_magic_packet(mac)
 
     broadcast_ips = set()
-    # 全网广播
     broadcast_ips.add("255.255.255.255")
 
-    # 如果指定了接口，尝试获取该接口的定向广播地址
     if iface:
         brd = get_broadcast_from_iface(iface)
         if brd:
@@ -58,6 +50,11 @@ def send_wol(mac: str, iface: str = None, repeat: int = 5):
         for port in ports:
             s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+            if iface:
+                try:
+                    s.setsockopt(socket.SOL_SOCKET, socket.SO_BINDTODEVICE, iface.encode())
+                except OSError:
+                    pass
             try:
                 for _ in range(repeat):
                     s.sendto(packet, (ip, port))
@@ -84,4 +81,3 @@ def main(argv):
 
 if __name__ == "__main__":
     raise SystemExit(main(sys.argv))
-
