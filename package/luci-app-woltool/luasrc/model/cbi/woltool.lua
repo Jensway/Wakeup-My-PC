@@ -1,43 +1,7 @@
-local uci = require "luci.model.uci".cursor()
 local sys = require "luci.sys"
 
--- ==================== 唤醒表单（SimpleForm） ====================
-local f = SimpleForm("woltool", translate("唤醒电脑"),
-	translate("从列表中选择一台主机，然后点击「唤醒」按钮。"))
-
-f.reset = false
-f.submit = translate("唤醒")
-
-local ws = f:section(SimpleSection)
-
-local host = ws:option(ListValue, "host", translate("主机"))
-host.rmempty = false
-
-uci:foreach("wolhost", "host", function(sec)
-	local name = sec.name or sec[".name"]
-	local mac = sec.mac or ""
-	if name and name ~= "" then
-		local label = name
-		if mac ~= "" then
-			label = string.format("%s (%s)", name, mac)
-		end
-		host:value(name, label)
-	end
-end)
-
-function f.handle(self, state, data)
-	if state == FORM_VALID then
-		local h = data and data.host
-		if h and #h > 0 then
-			sys.call(string.format("woltool %q >/tmp/woltool_last.log 2>&1", h))
-		end
-	end
-	return true
-end
-
--- ==================== 主机管理（Map） ====================
-local m = Map("wolhost", translate("主机管理"),
-	translate("在这里增删改需要被唤醒的主机。"))
+local m = Map("wolhost", translate("唤醒电脑"),
+	translate("点击主机右侧的「唤醒」按钮即可发送唤醒包。可在下方添加或删除主机。"))
 
 local s = m:section(TypedSection, "host")
 s.template = "cbi/tblsection"
@@ -53,4 +17,14 @@ mac_opt.rmempty = false
 local iface_opt = s:option(Value, "iface", translate("接口"))
 iface_opt.placeholder = "br-lan"
 
-return f, m
+local wake = s:option(Button, "_wake", translate("唤醒"))
+wake.inputtitle = translate("唤醒")
+wake.inputstyle = "apply"
+wake.write = function(self, section)
+	local name = m:get(section, "name")
+	if name and #name > 0 then
+		sys.call(string.format("woltool %q >/tmp/woltool_last.log 2>&1", name))
+	end
+end
+
+return m
