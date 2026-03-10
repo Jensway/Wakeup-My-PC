@@ -9,20 +9,25 @@ usage() {
 	exit 1
 }
 
-# 发送唤醒包：优先 etherwake，回退 wolmt6000
+# 发送唤醒包：优先 wolmt6000，回退 etherwake
 do_wake() {
 	local mac="$1"
 	local iface="$2"
 
+	if command -v wolmt6000 >/dev/null 2>&1; then
+		echo "通过接口 $iface 唤醒 $mac (wolmt6000) ..."
+		wolmt6000 "$mac" "$iface"
+		return $?
+	fi
+
 	if command -v etherwake >/dev/null 2>&1; then
-		echo "通过接口 $iface 唤醒 $mac (etherwake) ..."
+		echo "wolmt6000 不可用，通过接口 $iface 唤醒 $mac (etherwake) ..."
 		etherwake -i "$iface" "$mac"
 		return $?
 	fi
 
-	echo "etherwake 不可用，通过接口 $iface 唤醒 $mac (wolmt6000) ..."
-	wolmt6000 "$mac" "$iface"
-	return $?
+	echo "错误: wolmt6000 和 etherwake 均不可用" >&2
+	return 1
 }
 
 if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
