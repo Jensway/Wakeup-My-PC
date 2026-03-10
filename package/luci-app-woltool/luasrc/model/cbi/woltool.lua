@@ -46,8 +46,9 @@ end)
 
 local wake_btn = wake_sec:option(Button, "wake_btn", translate("唤醒"))
 
--- 主机管理区域：普通标题 + 列表
+-- 主机管理区域：表格布局，一行一台主机
 local s = m:section(TypedSection, "host", translate("主机管理"))
+s.template = "cbi/tblsection"
 s.addremove = true
 s.anonymous = true
 
