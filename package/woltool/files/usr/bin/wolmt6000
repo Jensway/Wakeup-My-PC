@@ -1,83 +1,47 @@
-#!/usr/bin/env python3
+#!/bin/sh
+# wolmt6000 - Wake-on-LAN 魔术包发送器（纯 Shell，无 Python 依赖）
 
-import socket
-import binascii
-import re
-import sys
-import subprocess
+[ -z "$1" ] && { echo "用法: wolmt6000 <MAC地址> [接口名]" >&2; exit 1; }
 
+MAC="$1"
+IFACE="$2"
 
-def make_magic_packet(mac: str) -> bytes:
-    mac_clean = re.sub(r"[^0-9A-Fa-f]", "", mac)
-    if len(mac_clean) != 12:
-        raise ValueError("MAC 地址格式不正确")
-    mac_bytes = binascii.unhexlify(mac_clean)
-    return b"\xff" * 6 + mac_bytes * 16
+# 清理 MAC 地址，去掉分隔符，转小写
+mac=$(printf '%s' "$MAC" | tr -d ':-.' | tr 'A-F' 'a-f')
+[ ${#mac} -ne 12 ] && { echo "MAC 地址格式不正确" >&2; exit 1; }
 
+# 将 MAC 拆成 \xNN 格式
+i=1; mf=""
+while [ $i -le 11 ]; do
+	mf="${mf}\\x$(echo "$mac" | cut -c${i}-$((i+1)))"
+	i=$((i+2))
+done
 
-def get_broadcast_from_iface(iface: str):
-    try:
-        out = subprocess.check_output(
-            ["ip", "-o", "-4", "addr", "show", "dev", iface],
-            stderr=subprocess.DEVNULL,
-        ).decode("utf-8", "ignore")
-    except Exception:
-        return None
+# 构造魔术包：6 字节 FF + MAC 重复 16 次
+pkt="\\xff\\xff\\xff\\xff\\xff\\xff"
+i=0; while [ $i -lt 16 ]; do pkt="${pkt}${mf}"; i=$((i+1)); done
 
-    for line in out.splitlines():
-        parts = line.split()
-        if "brd" in parts:
-            idx = parts.index("brd")
-            if idx + 1 < len(parts):
-                return parts[idx + 1]
-    return None
+# 写入临时文件（避免 shell 变量丢失二进制数据）
+TMP=$(mktemp /tmp/wol.XXXXXX)
+printf "${pkt}" > "$TMP"
 
+# 获取接口定向广播地址
+BRD=""
+if [ -n "$IFACE" ]; then
+	BRD=$(ip -o -4 addr show dev "$IFACE" 2>/dev/null | \
+		awk '{for(i=1;i<=NF;i++)if($i=="brd"){print $(i+1);exit}}')
+fi
 
-def send_wol(mac: str, iface: str = None, repeat: int = 5):
-    packet = make_magic_packet(mac)
+# 向多个目标发送，提高可靠性
+for dst in 255.255.255.255 ${BRD}; do
+	for port in 7 9; do
+		i=0; while [ $i -lt 3 ]; do
+			cat "$TMP" | nc -u -w1 "$dst" "$port" 2>/dev/null &
+			i=$((i+1))
+		done
+	done
+done
 
-    broadcast_ips = set()
-    broadcast_ips.add("255.255.255.255")
-
-    if iface:
-        brd = get_broadcast_from_iface(iface)
-        if brd:
-            broadcast_ips.add(brd)
-
-    ports = [7, 9]
-
-    for ip in broadcast_ips:
-        for port in ports:
-            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-            s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-            if iface:
-                try:
-                    s.setsockopt(socket.SOL_SOCKET, socket.SO_BINDTODEVICE, iface.encode())
-                except OSError:
-                    pass
-            try:
-                for _ in range(repeat):
-                    s.sendto(packet, (ip, port))
-            finally:
-                s.close()
-
-
-def main(argv):
-    if len(argv) < 2 or len(argv) > 3:
-        print("用法: wolmt6000 <MAC地址> [接口名]", file=sys.stderr)
-        return 1
-
-    mac = argv[1]
-    iface = argv[2] if len(argv) == 3 else None
-
-    try:
-        send_wol(mac, iface=iface)
-        print(f"已发送魔术包至 {mac}")
-        return 0
-    except Exception as e:
-        print(f"发送失败: {e}", file=sys.stderr)
-        return 1
-
-
-if __name__ == "__main__":
-    raise SystemExit(main(sys.argv))
+wait 2>/dev/null
+rm -f "$TMP"
+echo "已发送魔术包至 $MAC"
