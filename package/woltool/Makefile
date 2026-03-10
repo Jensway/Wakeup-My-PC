@@ -17,7 +17,7 @@ define Package/woltool
 endef
 
 define Package/woltool/description
- A small helper to wake up configured hosts using a Python-based Wake-on-LAN sender on the router.
+ A small helper to wake up configured hosts via Wake-on-LAN on the router.
 endef
 
 define Build/Compile
@@ -34,4 +34,3 @@ define Package/woltool/install
 endef
 
 $(eval $(call BuildPackage,woltool))
-
