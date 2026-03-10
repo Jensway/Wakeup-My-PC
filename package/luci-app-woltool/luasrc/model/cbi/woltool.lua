@@ -7,9 +7,14 @@ local m = Map("wolhost", translate("唤醒电脑"),
 	translate("点击主机右侧的「唤醒」按钮即可发送唤醒包。可在下方添加或删除主机。") ..
 	[=[
 <style>
-.cbi-section-table { table-layout: fixed; width: 100%; }
-.cbi-section-table input[type="text"] { width: 100%; box-sizing: border-box; }
-.cbi-section-table .td, .cbi-section-table .th { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 4px 6px; }
+.cbi-section-table { width: 100%; }
+.cbi-section-table .td, .cbi-section-table .th { padding: 4px 6px; vertical-align: middle; }
+.cbi-section-table input[type="text"] { box-sizing: border-box; width: 100%; min-width: 50px; }
+.cbi-section-table .cbi-section-table-cell { width: 1px; white-space: nowrap; text-align: center; }
+.cbi-section-table .td:nth-last-child(1),
+.cbi-section-table .td:nth-last-child(2),
+.cbi-section-table .th:nth-last-child(1),
+.cbi-section-table .th:nth-last-child(2) { width: 1px; white-space: nowrap; }
 </style>
 ]=] ..
 	string.format([=[
