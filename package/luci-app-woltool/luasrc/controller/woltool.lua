@@ -8,9 +8,7 @@ function index()
 		return
 	end
 
-	entry({"admin", "services", "woltool"},
-		cbi("woltool"), _("唤醒电脑"), 60).dependent = true
-	entry({"admin", "services", "woltool_hosts"},
-		cbi("woltool_hosts"), _("主机管理"), 61).dependent = true
+	entry({"admin", "services", "woltool"}, cbi("woltool"), _("唤醒电脑"), 60).dependent = true
+	entry({"admin", "services", "woltool", "hosts"}, cbi("woltool_hosts"), _("主机管理"), 61).dependent = true
 end
 
