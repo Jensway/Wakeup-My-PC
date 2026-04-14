@@ -49,15 +49,20 @@ local m = Map("wolhost", translate("唤醒电脑"),
 	.cbi-section-table .td:nth-child(4), .cbi-section-table .td:nth-child(5),
 	.cbi-section-table td:nth-child(4), .cbi-section-table td:nth-child(5) {
 		display: flex !important;
-		flex-wrap: wrap;
+		flex-wrap: nowrap !important;
 		gap: 8px;
 		align-items: center;
+		justify-content: flex-start;
 	}
 	.cbi-section-table .td:nth-child(4)::before, .cbi-section-table .td:nth-child(5)::before,
 	.cbi-section-table td:nth-child(4)::before, .cbi-section-table td:nth-child(5)::before { display: none; }
 	.cbi-section-table .td:nth-child(4) .cbi-button, .cbi-section-table .td:nth-child(5) .cbi-button,
 	.cbi-section-table .td:nth-child(5) a, .cbi-section-table td:nth-child(4) .cbi-button,
-	.cbi-section-table td:nth-child(5) .cbi-button, .cbi-section-table td:nth-child(5) a { margin: 0; }
+	.cbi-section-table td:nth-child(5) .cbi-button, .cbi-section-table td:nth-child(5) a {
+		margin: 0 !important;
+		display: inline-block !important;
+		white-space: nowrap;
+	}
 	.cbi-section-table input[type="text"] { max-width: 100%; }
 	.cbi-section-table .cbi-button-add { margin-top: 8px; }
 
