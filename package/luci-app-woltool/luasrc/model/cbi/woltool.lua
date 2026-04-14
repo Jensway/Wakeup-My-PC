@@ -60,6 +60,26 @@ local m = Map("wolhost", translate("唤醒电脑"),
 	.cbi-section-table td:nth-child(5) .cbi-button, .cbi-section-table td:nth-child(5) a { margin: 0; }
 	.cbi-section-table input[type="text"] { max-width: 100%; }
 	.cbi-section-table .cbi-button-add { margin-top: 8px; }
+
+	/* 手机端：底部按钮排成一行 */
+	#maincontent .cbi-section-table + div,
+	.cbi-page-actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+		justify-content: flex-start;
+	}
+	#maincontent .cbi-section-table + div input[type="submit"],
+	#maincontent .cbi-section-table + div input[type="button"],
+	.cbi-page-actions input[type="submit"],
+	.cbi-page-actions input[type="reset"],
+	.cbi-page-actions .cbi-button {
+		flex: 1 1 auto;
+		min-width: 80px;
+		max-width: 160px;
+		padding: 8px 4px;
+		font-size: 14px;
+	}
 }
 </style>
 ]=] ..
