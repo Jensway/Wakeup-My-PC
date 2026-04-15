@@ -64,49 +64,61 @@ local m = Map("wolhost", translate("唤醒电脑"),
 		white-space: nowrap;
 	}
 	.cbi-section-table input[type="text"] { max-width: 100%; }
+	.cbi-section-table .cbi-button-add { margin-top: 0 !important; }
 
-	/* 手机端：操作列按钮横向排列（表格内） */
+	/* 手机端：所有操作列（唤醒+删除）强制横向排列 */
+	/* 重要：这些规则必须放在最后，确保覆盖上面的 display:block */
 	.cbi-section-table .td:nth-child(4),
-	.cbi-section-table td:nth-child(4) {
+	.cbi-section-table .td:nth-child(5),
+	.cbi-section-table td:nth-child(4),
+	.cbi-section-table td:nth-child(5) {
 		display: flex !important;
 		flex-wrap: nowrap !important;
 		gap: 8px;
-		align-items: center;
-		justify-content: flex-start;
+		align-items: center !important;
+		justify-content: flex-start !important;
+		width: auto !important;
+		padding: 4px 0 !important;
 	}
 	.cbi-section-table .td:nth-child(4)::before,
-	.cbi-section-table td:nth-child(4)::before { display: none; }
-	.cbi-section-table .td:nth-child(4) .cbi-button,
-	.cbi-section-table td:nth-child(4) .cbi-button {
+	.cbi-section-table .td:nth-child(5)::before,
+	.cbi-section-table td:nth-child(4)::before,
+	.cbi-section-table td:nth-child(5)::before {
+		display: none !important;
+	}
+	.cbi-section-table .td:nth-child(4) input,
+	.cbi-section-table .td:nth-child(5) input,
+	.cbi-section-table .td:nth-child(4) a,
+	.cbi-section-table .td:nth-child(5) a,
+	.cbi-section-table td:nth-child(4) input,
+	.cbi-section-table td:nth-child(5) input,
+	.cbi-section-table td:nth-child(4) a,
+	.cbi-section-table td:nth-child(5) a {
 		margin: 0 !important;
 		display: inline-block !important;
-		white-space: nowrap;
-		flex: 0 0 auto;
+		white-space: nowrap !important;
+		vertical-align: middle !important;
 	}
 
-	/* 手机端：底部添加/删除按钮横向排列 */
+	/* 手机端：底部按钮横向排列 */
 	#maincontent .cbi-section-table + div,
 	.cbi-page-actions {
 		display: flex !important;
 		flex-wrap: nowrap !important;
-		gap: 8px;
-		justify-content: flex-start;
-		align-items: center;
+		gap: 8px !important;
+		justify-content: flex-start !important;
+		align-items: center !important;
 	}
+	#maincontent .cbi-section-table + div input,
 	#maincontent .cbi-section-table + div .cbi-button,
-	#maincontent .cbi-section-table + div input[type="submit"],
-	#maincontent .cbi-section-table + div input[type="button"],
-	.cbi-page-actions .cbi-button,
-	.cbi-page-actions input[type="submit"],
-	.cbi-page-actions input[type="reset"] {
+	.cbi-page-actions input,
+	.cbi-page-actions .cbi-button {
 		margin: 0 !important;
 		display: inline-block !important;
-		white-space: nowrap;
-		flex: 0 0 auto;
-		padding: 8px 12px;
-		font-size: 14px;
+		white-space: nowrap !important;
+		padding: 8px 12px !important;
+		font-size: 14px !important;
 	}
-	.cbi-section-table .cbi-button-add { margin-top: 0 !important; }
 }
 </style>
 ]=] ..
