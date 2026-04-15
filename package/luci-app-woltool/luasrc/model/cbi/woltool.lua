@@ -211,7 +211,6 @@ iface_opt.placeholder = "br-lan"
 
 local wake = s:option(DummyValue, "_wake", translate("操作"))
 wake.rawhtml = true
-wake.template = "cbi/woltool/wake_buttons"
 wake.cfgvalue = function(self, section)
 	local name = m:get(section, "name") or ""
 	local mac = m:get(section, "mac") or ""
