@@ -100,24 +100,33 @@ local m = Map("wolhost", translate("唤醒电脑"),
 		vertical-align: middle !important;
 	}
 
-	/* 手机端：底部按钮横向排列 */
+	/* 手机端：底部按钮横向排列（添加/保存/复位等） */
+	.cbi-page-actions,
 	#maincontent .cbi-section-table + div,
-	.cbi-page-actions {
+	.cbi-tblsection-actions {
 		display: flex !important;
 		flex-wrap: nowrap !important;
 		gap: 8px !important;
 		justify-content: flex-start !important;
 		align-items: center !important;
+		padding: 8px 0 !important;
 	}
+	.cbi-page-actions input,
+	.cbi-page-actions .cbi-button,
 	#maincontent .cbi-section-table + div input,
 	#maincontent .cbi-section-table + div .cbi-button,
-	.cbi-page-actions input,
-	.cbi-page-actions .cbi-button {
+	.cbi-tblsection-actions input,
+	.cbi-tblsection-actions .cbi-button {
 		margin: 0 !important;
 		display: inline-block !important;
 		white-space: nowrap !important;
-		padding: 8px 12px !important;
+		padding: 8px 16px !important;
 		font-size: 14px !important;
+		min-width: auto !important;
+	}
+	.cbi-page-actions .cbi-button-add,
+	#maincontent .cbi-section-table + div .cbi-button-add {
+		margin-top: 0 !important;
 	}
 }
 </style>
@@ -158,7 +167,7 @@ function wolWake(btn) {
 
 local s = m:section(TypedSection, "host")
 s.template = "cbi/tblsection"
-s.addremove = true
+s.addremove = false  -- 禁用自动删除列，我们在操作列内自定义
 s.anonymous = true
 
 local name_opt = s:option(Value, "name", translate("名称"))
@@ -172,12 +181,17 @@ iface_opt.placeholder = "br-lan"
 
 local wake = s:option(DummyValue, "_wake", translate("操作"))
 wake.rawhtml = true
+wake.template = "cbi/woltool/wake_buttons"
 wake.cfgvalue = function(self, section)
 	local name = m:get(section, "name") or ""
+	local mac = m:get(section, "mac") or ""
 	return string.format(
-		'<input type="button" class="cbi-button cbi-button-apply" value="%s" data-name="%s" onclick="wolWake(this)" />',
+		'<span class="wol-actions"><input type="button" class="cbi-button cbi-button-apply" value="%s" data-name="%s" onclick="wolWake(this)" />' ..
+		'<input type="button" class="cbi-button cbi-button-remove" value="%s" onclick="this.form .cbi.del.value=\'%s\';this.form.submit()" /></span>',
 		translate("唤醒"),
-		util.pcdata(name)
+		util.pcdata(name),
+		translate("删除"),
+		section
 	)
 end
 
