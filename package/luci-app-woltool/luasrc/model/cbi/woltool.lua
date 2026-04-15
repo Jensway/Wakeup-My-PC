@@ -131,7 +131,7 @@ local m = Map("wolhost", translate("唤醒电脑"),
 }
 </style>
 ]=] ..
-	string.format([=[
+string.format([=[
 <script>
 var wolUrl = '%s';
 function wolWake(btn) {
@@ -161,6 +161,36 @@ function wolWake(btn) {
 	var body = 'name=' + encodeURIComponent(name);
 	if (tk) body += '&token=' + encodeURIComponent(tk.value);
 	xhr.send(body);
+}
+
+// 手机端：合并操作列按钮为一行（兼容性处理）
+if (window.innerWidth <= 768) {
+	document.addEventListener('DOMContentLoaded', function() {
+		// 操作列容器已经是 flex，这里确保按钮不换行
+		var actionCells = document.querySelectorAll('.wol-actions');
+		actionCells.forEach(function(cell) {
+			cell.style.display = 'flex';
+			cell.style.flexWrap = 'nowrap';
+			cell.style.gap = '8px';
+		});
+		
+		// 底部按钮区强制横向排列
+		var pageActions = document.querySelector('.cbi-page-actions');
+		if (pageActions) {
+			pageActions.style.display = 'flex';
+			pageActions.style.flexWrap = 'nowrap';
+			pageActions.style.gap = '8px';
+			pageActions.style.alignItems = 'center';
+		}
+		
+		// 按钮文字优化：保存并应用 → 应用
+		var buttons = pageActions ? pageActions.querySelectorAll('input[type="submit"]') : [];
+		buttons.forEach(function(btn) {
+			if (btn.value.indexOf('\u4fdd\u5b58\u5e76\u5e94\u7528') !== -1) {
+				btn.value = btn.value.replace('\u4fdd\u5b58\u5e76\u5e94\u7528', '\u5e94\u7528');
+			}
+		});
+	});
 }
 </script>
 ]=], wake_url))
