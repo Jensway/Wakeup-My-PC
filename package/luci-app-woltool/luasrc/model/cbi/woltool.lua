@@ -17,6 +17,12 @@ local m = Map("wolhost", translate("唤醒电脑"),
 }
 
 @media (max-width: 768px) {
+	.woltool-mobile-card {
+		--woltool-label-width: 50px;
+		--woltool-field-gap: 6px;
+		--woltool-value-width: 90%;
+	}
+
 	.cbi-section-table.woltool-mobile-hidden {
 		display: none !important;
 	}
@@ -49,8 +55,8 @@ local m = Map("wolhost", translate("唤醒电脑"),
 
 	.woltool-mobile-field {
 		display: grid;
-		grid-template-columns: 50px minmax(0, 1fr);
-		column-gap: 6px;
+		grid-template-columns: var(--woltool-label-width) minmax(0, 1fr);
+		column-gap: var(--woltool-field-gap);
 		align-items: center;
 		width: 100%;
 		max-width: 100%;
@@ -76,7 +82,7 @@ local m = Map("wolhost", translate("唤醒电脑"),
 	}
 
 	.woltool-mobile-value {
-		width: 90%;
+		width: var(--woltool-value-width);
 		justify-self: start;
 	}
 
@@ -113,8 +119,9 @@ local m = Map("wolhost", translate("唤醒电脑"),
 		display: grid;
 		grid-template-columns: repeat(2, minmax(0, 1fr));
 		gap: 10px;
-		width: 100%;
-		max-width: 100%;
+		width: calc((100% - (var(--woltool-label-width) + var(--woltool-field-gap))) * 0.9);
+		max-width: calc((100% - (var(--woltool-label-width) + var(--woltool-field-gap))) * 0.9);
+		margin-left: calc(var(--woltool-label-width) + var(--woltool-field-gap));
 		margin-top: 10px;
 	}
 
