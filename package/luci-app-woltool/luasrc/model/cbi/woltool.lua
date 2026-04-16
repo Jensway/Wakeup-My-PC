@@ -213,14 +213,10 @@ local wake = s:option(DummyValue, "_wake", translate("操作"))
 wake.rawhtml = true
 wake.cfgvalue = function(self, section)
 	local name = m:get(section, "name") or ""
-	local mac = m:get(section, "mac") or ""
 	return string.format(
-		'<span class="wol-actions"><input type="button" class="cbi-button cbi-button-apply" value="%s" data-name="%s" onclick="wolWake(this)" />' ..
-		'<input type="button" class="cbi-button cbi-button-remove" value="%s" onclick="this.form .cbi.del.value=\'%s\';this.form.submit()" /></span>',
+		'<span class="wol-actions"><input type="button" class="cbi-button cbi-button-apply" value="%s" data-name="%s" onclick="wolWake(this)" /></span>',
 		translate("唤醒"),
-		util.pcdata(name),
-		translate("删除"),
-		section
+		util.pcdata(name)
 	)
 end
 
