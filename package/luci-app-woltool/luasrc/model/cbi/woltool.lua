@@ -3,82 +3,77 @@ local disp = require "luci.dispatcher"
 
 local wake_url = disp.build_url("admin", "services", "woltool", "wake")
 
-local m = Map("woltool", translate("唤醒电脑"),
+local m = Map("wolhost", translate("唤醒电脑"),
 	translate("点击主机右侧的「唤醒」按钮即可发送唤醒包。可在下方添加或删除主机。") ..
-	string.format([=[
-<style>
-/* 手机端自适应布局 */
-@media (max-width: 600px) {
-	.cbi-section-table tbody tr {
-		display: grid !important;
-		grid-template-columns: auto 1fr auto auto !important;
-		gap: 4px 8px !important;
-		align-items: center !important;
-		padding: 8px !important;
-		border-bottom: 1px solid #ddd !important;
-	}
-	.cbi-section-table tbody tr td,
-	.cbi-section-table tbody tr .td {
-		padding: 4px 2px !important;
-		border: none !important;
-	}
-	.cbi-section-table tbody tr td::before { display: none !important; }
-	.cbi-section-table input[type="text"] {
-		width: 100% !important;
-		min-width: 0 !important;
-		box-sizing: border-box !important;
-	}
-	.cbi-section-table input[type="button"] {
-		padding: 6px 10px !important;
-		font-size: 12px !important;
-	}
-
-	/* 底部按钮自适应 */
-	.cbi-page-actions {
-		display: flex !important;
-		flex-wrap: wrap !important;
-		gap: 6px !important;
-		padding: 10px 0 !important;
-	}
-	.cbi-page-actions input,
-	.cbi-page-actions .cbi-button {
-		flex: 1 1 auto !important;
-		min-width: 70px !important;
-	}
-}
-</style>
-<script>
-var wolUrl = '%s';
-function wolWake(btn) {
-	var name = btn.getAttribute('data-name');
-	btn.disabled = true;
-	var orig = btn.value;
-	btn.value = '发送中...';
-	var tk = document.querySelector('input[name="token"]');
-	var xhr = new XMLHttpRequest();
-	xhr.open('POST', wolUrl, true);
-	xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-	xhr.onload = function() {
-		btn.disabled = false;
-		btn.value = orig;
-		try {
-			var r = JSON.parse(xhr.responseText);
-			alert(r.success ? '\u2714 ' + r.message : '\u2716 ' + r.message);
-		} catch(e) {
-			alert(xhr.status === 200 ? '\u2714 唤醒包已发送' : '\u2716 请求失败');
-		}
-	};
-	xhr.onerror = function() {
-		btn.disabled = false;
-		btn.value = orig;
-		alert('\u2716 网络请求失败');
-	};
-	var body = 'name=' + encodeURIComponent(name);
-	if (tk) body += '&token=' + encodeURIComponent(tk.value);
-	xhr.send(body);
-}
-</script>
-]=], wake_url))
+	'<style>' ..
+	'@media (max-width: 600px) {' ..
+	'.cbi-section-table tbody tr {' ..
+	'display: grid !important;' ..
+	'grid-template-columns: auto 1fr auto auto !important;' ..
+	'gap: 4px 8px !important;' ..
+	'align-items: center !important;' ..
+	'padding: 8px !important;' ..
+	'border-bottom: 1px solid #ddd !important;' ..
+	'}' ..
+	'.cbi-section-table tbody tr td,' ..
+	'.cbi-section-table tbody tr .td {' ..
+	'padding: 4px 2px !important;' ..
+	'border: none !important;' ..
+	'}' ..
+	'.cbi-section-table tbody tr td::before { display: none !important; }' ..
+	'.cbi-section-table input[type="text"] {' ..
+	'width: 100%% !important;' ..
+	'min-width: 0 !important;' ..
+	'box-sizing: border-box !important;' ..
+	'}' ..
+	'.cbi-section-table input[type="button"] {' ..
+	'padding: 6px 10px !important;' ..
+	'font-size: 12px !important;' ..
+	'}' ..
+	'.cbi-page-actions {' ..
+	'display: flex !important;' ..
+	'flex-wrap: wrap !important;' ..
+	'gap: 6px !important;' ..
+	'padding: 10px 0 !important;' ..
+	'}' ..
+	'.cbi-page-actions input,' ..
+	'.cbi-page-actions .cbi-button {' ..
+	'flex: 1 1 auto !important;' ..
+	'min-width: 70px !important;' ..
+	'}' ..
+	'}' ..
+	'</style>' ..
+	'<script>' ..
+	'var wolUrl = "' .. wake_url .. '";' ..
+	'function wolWake(btn) {' ..
+	'var name = btn.getAttribute("data-name");' ..
+	'btn.disabled = true;' ..
+	'var orig = btn.value;' ..
+	'btn.value = "发送中...";' ..
+	'var tk = document.querySelector("input[name=\\\"token\\\"]");' ..
+	'var xhr = new XMLHttpRequest();' ..
+	'xhr.open("POST", wolUrl, true);' ..
+	'xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");' ..
+	'xhr.onload = function() {' ..
+	'btn.disabled = false;' ..
+	'btn.value = orig;' ..
+	'try {' ..
+	'var r = JSON.parse(xhr.responseText);' ..
+	'alert(r.success ? "\\u2714 " + r.message : "\\u2716 " + r.message);' ..
+	'} catch(e) {' ..
+	'alert(xhr.status === 200 ? "\\u2714 唤醒包已发送" : "\\u2716 请求失败");' ..
+	'}' ..
+	'};' ..
+	'xhr.onerror = function() {' ..
+	'btn.disabled = false;' ..
+	'btn.value = orig;' ..
+	'alert("\\u2716 网络请求失败");' ..
+	'};' ..
+	'var body = "name=" + encodeURIComponent(name);' ..
+	'if (tk) body += "&token=" + encodeURIComponent(tk.value);' ..
+	'xhr.send(body);' ..
+	'}' ..
+	'</script>')
 
 local s = m:section(TypedSection, "host")
 s.template = "cbi/tblsection"
