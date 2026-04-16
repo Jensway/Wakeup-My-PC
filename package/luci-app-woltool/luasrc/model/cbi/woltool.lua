@@ -16,75 +16,89 @@ local m = Map("wolhost", translate("唤醒电脑"),
 .cbi-section-table .th:nth-last-child(1),
 .cbi-section-table .th:nth-last-child(2) { width: 1px; white-space: nowrap; }
 
-/* 小屏：表格改为卡片式纵向布局，避免错位和空白 */
+/* 手机端布局 */
 @media (max-width: 768px) {
-	.cbi-section-table, .cbi-section-table thead, .cbi-section-table tbody,
-	.cbi-section-table tr, .cbi-section-table th, .cbi-section-table .td,
-	.cbi-section-table td { display: block; }
-	.cbi-section-table thead { display: none; }
+	/* 表格改为卡片式 */
+	.cbi-section-table,
+	.cbi-section-table thead,
+	.cbi-section-table tbody,
+	.cbi-section-table tr,
+	.cbi-section-table th,
+	.cbi-section-table .td,
+	.cbi-section-table td {
+		display: block !important;
+		width: auto !important;
+	}
+	.cbi-section-table thead { display: none !important; }
 	.cbi-section-table tbody tr {
-		margin-bottom: 16px;
-		padding: 12px;
-		border: 1px solid #e0e0e0;
-		border-radius: 6px;
-		background: #fafafa;
+		margin: 8px 0;
+		padding: 10px;
+		border: 1px solid #ddd;
+		border-radius: 4px;
+		background: #f9f9f9;
 	}
-	.cbi-section-table .td, .cbi-section-table td {
-		width: 100% !important;
-		padding: 8px 0 !important;
-		border: none !important;
-		white-space: normal !important;
-	}
-	.cbi-section-table .td::before, .cbi-section-table td::before {
-		display: block;
-		font-weight: bold;
-		margin-bottom: 4px;
-		color: #333;
-	}
-	.cbi-section-table .td:nth-child(1)::before, .cbi-section-table td:nth-child(1)::before { content: "名称:"; }
-	.cbi-section-table .td:nth-child(2)::before, .cbi-section-table td:nth-child(2)::before { content: "MAC 地址:"; }
-	.cbi-section-table .td:nth-child(3)::before, .cbi-section-table td:nth-child(3)::before { content: "接口:"; }
-	.cbi-section-table .td:nth-child(4)::before, .cbi-section-table td:nth-child(4)::before { content: "操作:"; }
-	.cbi-section-table .td:nth-child(5)::before, .cbi-section-table td:nth-child(5)::before { content: ""; margin: 0; }
-	.cbi-section-table .td:nth-child(4), .cbi-section-table .td:nth-child(5),
-	.cbi-section-table td:nth-child(4), .cbi-section-table td:nth-child(5) {
-		display: flex !important;
-		flex-wrap: nowrap !important;
-		gap: 8px;
-		align-items: center;
-		justify-content: flex-start;
-	}
-	.cbi-section-table .td:nth-child(4)::before, .cbi-section-table .td:nth-child(5)::before,
-	.cbi-section-table td:nth-child(4)::before, .cbi-section-table td:nth-child(5)::before { display: none; }
-	.cbi-section-table .td:nth-child(4) .cbi-button, .cbi-section-table .td:nth-child(5) .cbi-button,
-	.cbi-section-table .td:nth-child(5) a, .cbi-section-table td:nth-child(4) .cbi-button,
-	.cbi-section-table td:nth-child(5) .cbi-button, .cbi-section-table td:nth-child(5) a {
-		margin: 0 !important;
-		display: inline-block !important;
-		white-space: nowrap;
-	}
-	.cbi-section-table input[type="text"] { max-width: 100%; }
-	.cbi-section-table .cbi-button-add { margin-top: 8px; }
 
-	/* 手机端：底部按钮排成一行 */
+	/* 名称、MAC、接口三列 - 各占一行 */
+	.cbi-section-table tbody tr td:nth-child(1),
+	.cbi-section-table tbody tr td:nth-child(2),
+	.cbi-section-table tbody tr td:nth-child(3),
+	.cbi-section-table tbody tr .td:nth-child(1),
+	.cbi-section-table tbody tr .td:nth-child(2),
+	.cbi-section-table tbody tr .td:nth-child(3) {
+		width: 100% !important;
+		padding: 6px 0 !important;
+		border-bottom: 1px solid #eee !important;
+	}
+	.cbi-section-table tbody tr td:nth-child(1)::before { content: "名称: "; font-weight: bold; }
+	.cbi-section-table tbody tr td:nth-child(2)::before { content: "MAC: "; font-weight: bold; }
+	.cbi-section-table tbody tr td:nth-child(3)::before { content: "接口: "; font-weight: bold; }
+	.cbi-section-table tbody tr .td:nth-child(1)::before { content: "名称: "; font-weight: bold; }
+	.cbi-section-table tbody tr .td:nth-child(2)::before { content: "MAC: "; font-weight: bold; }
+	.cbi-section-table tbody tr .td:nth-child(3)::before { content: "接口: "; font-weight: bold; }
+
+	/* 操作列和删除列 - 横向排列在同一行 */
+	.cbi-section-table tbody tr td:nth-child(4),
+	.cbi-section-table tbody tr td:nth-child(5),
+	.cbi-section-table tbody tr .td:nth-child(4),
+	.cbi-section-table tbody tr .td:nth-child(5) {
+		display: inline-block !important;
+		width: auto !important;
+		padding: 6px 4px 6px 0 !important;
+		border: none !important;
+		vertical-align: middle !important;
+	}
+	.cbi-section-table tbody tr td:nth-child(4)::before,
+	.cbi-section-table tbody tr td:nth-child(5)::before,
+	.cbi-section-table tbody tr .td:nth-child(4)::before,
+	.cbi-section-table tbody tr .td:nth-child(5)::before {
+		display: none !important;
+	}
+
+	/* 按钮样式 */
+	.cbi-section-table tbody input[type="button"],
+	.cbi-section-table tbody a {
+		margin: 0 2px !important;
+		padding: 6px 10px !important;
+		font-size: 13px !important;
+	}
+
+	/* 底部按钮横向排列 */
 	#maincontent .cbi-section-table + div,
 	.cbi-page-actions {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 8px;
-		justify-content: flex-start;
+		display: flex !important;
+		flex-wrap: wrap !important;
+		gap: 6px !important;
+		padding: 8px 0 !important;
 	}
-	#maincontent .cbi-section-table + div input[type="submit"],
-	#maincontent .cbi-section-table + div input[type="button"],
-	.cbi-page-actions input[type="submit"],
-	.cbi-page-actions input[type="reset"],
-	.cbi-page-actions .cbi-button {
-		flex: 1 1 auto;
-		min-width: 80px;
-		max-width: 160px;
-		padding: 8px 4px;
-		font-size: 14px;
+	#maincontent .cbi-section-table + div input,
+	#maincontent .cbi-section-table + div button,
+	.cbi-page-actions input,
+	.cbi-page-actions button {
+		margin: 0 !important;
+		padding: 8px 12px !important;
+		font-size: 13px !important;
 	}
+	.cbi-section-table input[type="text"] { max-width: 100%; }
 }
 </style>
 ]=] ..
