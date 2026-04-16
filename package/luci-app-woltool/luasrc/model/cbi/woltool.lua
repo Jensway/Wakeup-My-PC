@@ -5,56 +5,47 @@ local wake_url = disp.build_url("admin", "services", "woltool", "wake")
 
 local m = Map("wolhost", translate("唤醒电脑"),
 	translate("点击主机右侧的「唤醒」按钮即可发送唤醒包。可在下方添加或删除主机。") ..
-	[=[
+	string.format([=[
 <style>
-.cbi-section-table { width: 100%; }
-.cbi-section-table .td, .cbi-section-table .th { padding: 4px 6px; vertical-align: middle; }
-.cbi-section-table input[type="text"] { box-sizing: border-box; width: 100%; min-width: 50px; }
-.cbi-section-table .cbi-section-table-cell { width: 1px; white-space: nowrap; text-align: center; }
-.cbi-section-table .td:nth-last-child(1),
-.cbi-section-table .td:nth-last-child(2),
-.cbi-section-table .th:nth-last-child(1),
-.cbi-section-table .th:nth-last-child(2) { width: 1px; white-space: nowrap; }
-
-/* 手机端：表格保持行内布局，隐藏表头，压缩列宽 */
+/* 手机端：表格可横向滚动 */
 @media (max-width: 768px) {
-	.cbi-section-table thead { display: none; }
-	.cbi-section-table tbody tr { display: block !important; white-space: nowrap; }
-	.cbi-section-table tbody tr td,
-	.cbi-section-table tbody tr .td { display: inline-block !important; white-space: nowrap; vertical-align: middle; }
+	.cbi-section-table {
+		display: block !important;
+		overflow-x: auto !important;
+		white-space: nowrap !important;
+		-webkit-overflow-scrolling: touch;
+	}
+	.cbi-section-table thead,
+	.cbi-section-table tbody,
+	.cbi-section-table tr,
+	.cbi-section-table th,
+	.cbi-section-table td {
+		display: inline-block !important;
+		white-space: nowrap !important;
+	}
+	.cbi-section-table input[type="text"] {
+		width: 80px !important;
+		min-width: 80px !important;
+	}
+	.cbi-section-table input[type="button"] {
+		padding: 2px 6px !important;
+		font-size: 11px !important;
+	}
 
-	/* 名称列：固定宽度60px，后跟唤醒和删除按钮 */
-	.cbi-section-table tbody tr td:nth-child(1),
-	.cbi-section-table tbody tr .td:nth-child(1) { width: 60px !important; min-width: 60px !important; }
-	/* MAC列：固定宽度90px */
-	.cbi-section-table tbody tr td:nth-child(2),
-	.cbi-section-table tbody tr .td:nth-child(2) { width: 90px !important; min-width: 90px !important; }
-	/* 接口列：固定宽度70px */
-	.cbi-section-table tbody tr td:nth-child(3),
-	.cbi-section-table tbody tr .td:nth-child(3) { width: 70px !important; min-width: 70px !important; }
-	/* 操作列和删除列：紧凑 */
-	.cbi-section-table tbody tr td:nth-child(4),
-	.cbi-section-table tbody tr td:nth-child(5),
-	.cbi-section-table tbody tr .td:nth-child(4),
-	.cbi-section-table tbody tr .td:nth-child(5) { width: auto !important; }
-
-	/* 表格可横向滚动 */
-	.cbi-section-table { display: block !important; overflow-x: auto !important; white-space: nowrap !important; }
-
-	/* 输入框全宽显示 */
-	.cbi-section-table input[type="text"] { width: 100% !important; min-width: unset !important; }
-
-	/* 按钮紧凑 */
-	.cbi-section-table input[type="button"],
-	.cbi-section-table a { margin: 0 !important; padding: 4px 8px !important; font-size: 12px !important; white-space: nowrap; }
-
-	/* 底部按钮强制一行 */
-	.cbi-page-actions { display: flex !important; flex-wrap: nowrap !important; gap: 4px !important; }
-	.cbi-page-actions input { flex: 1 !important; min-width: 0 !important; padding: 6px 4px !important; font-size: 12px !important; }
+	/* 底部按钮一行 */
+	.cbi-page-actions {
+		display: flex !important;
+		flex-wrap: nowrap !important;
+		gap: 4px !important;
+	}
+	.cbi-page-actions input {
+		flex: 1 !important;
+		min-width: 0 !important;
+		padding: 6px 2px !important;
+		font-size: 11px !important;
+	}
 }
 </style>
-]=] ..
-	string.format([=[
 <script>
 var wolUrl = '%s';
 function wolWake(btn) {
@@ -79,7 +70,7 @@ function wolWake(btn) {
 	xhr.onerror = function() {
 		btn.disabled = false;
 		btn.value = orig;
-		alert('\u2716 网络请求失���');
+		alert('\u2716 网络请求失败');
 	};
 	var body = 'name=' + encodeURIComponent(name);
 	if (tk) body += '&token=' + encodeURIComponent(tk.value);
