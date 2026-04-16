@@ -22,12 +22,14 @@ local m = Map("wolhost", translate("唤醒电脑"),
 	}
 
 	.woltool-mobile-list {
-		display: block;
-		width: calc(100% + 12px) !important;
+		display: grid;
+		gap: 14px;
+		width: 100% !important;
 		min-width: 0 !important;
-		max-width: calc(100% + 12px) !important;
+		max-width: 100% !important;
 		box-sizing: border-box;
-		margin: 0 -6px;
+		margin: 0;
+		padding-bottom: 116px;
 	}
 
 	.woltool-mobile-card {
@@ -37,19 +39,19 @@ local m = Map("wolhost", translate("唤醒电脑"),
 		max-width: 100% !important;
 		box-sizing: border-box;
 		overflow: hidden;
-		margin-bottom: 12px;
-		padding: 12px;
-		border: 1px solid #e4e7ee;
-		border-radius: 12px;
+		margin-bottom: 0;
+		padding: 14px;
+		border: 1px solid #e7ebf3;
+		border-radius: 16px;
 		background: #ffffff;
-		box-shadow: 0 6px 18px rgba(28, 39, 76, 0.06);
+		box-shadow: 0 10px 30px rgba(28, 39, 76, 0.08);
 	}
 
 	.woltool-mobile-field {
 		display: block;
 		width: 100%;
 		max-width: 100%;
-		margin: 0 0 12px 0;
+		margin: 0 0 14px 0;
 	}
 
 	.woltool-mobile-label {
@@ -79,10 +81,10 @@ local m = Map("wolhost", translate("唤醒电脑"),
 	}
 
 	.woltool-mobile-value input[type="text"] {
-		height: 40px;
-		padding-left: 10px;
-		padding-right: 10px;
-		border-radius: 10px;
+		height: 42px;
+		padding-left: 12px;
+		padding-right: 12px;
+		border-radius: 12px;
 	}
 
 	.woltool-mobile-field input[type="text"] {
@@ -97,7 +99,7 @@ local m = Map("wolhost", translate("唤醒电脑"),
 		gap: 10px;
 		width: 100%;
 		max-width: 100%;
-		margin-top: 4px;
+		margin-top: 8px;
 	}
 
 	.woltool-mobile-action {
@@ -122,7 +124,7 @@ local m = Map("wolhost", translate("唤醒电脑"),
 		display: block;
 		height: 40px;
 		padding: 0 12px;
-		border-radius: 10px;
+		border-radius: 12px;
 		text-align: center;
 		white-space: nowrap;
 		font-weight: 600;
@@ -153,8 +155,23 @@ local m = Map("wolhost", translate("唤醒电脑"),
 	.cbi-page-actions.woltool-mobile-actions {
 		display: flex;
 		flex-wrap: nowrap;
-		gap: 6px;
+		gap: 8px;
 		align-items: stretch;
+	}
+
+	.cbi-page-actions.woltool-mobile-actions {
+		position: fixed;
+		left: 12px;
+		right: 12px;
+		bottom: calc(env(safe-area-inset-bottom, 0px) + 10px);
+		z-index: 1000;
+		padding: 10px;
+		border: 1px solid rgba(226, 232, 240, 0.95);
+		border-radius: 18px;
+		background: rgba(255, 255, 255, 0.94);
+		box-shadow: 0 14px 36px rgba(15, 23, 42, 0.16);
+		backdrop-filter: blur(14px);
+		-webkit-backdrop-filter: blur(14px);
 	}
 
 	.cbi-page-actions input,
@@ -162,9 +179,13 @@ local m = Map("wolhost", translate("唤醒电脑"),
 	.cbi-page-actions a.cbi-button {
 		flex: 1 1 0;
 		min-width: 0;
-		padding-left: 4px;
-		padding-right: 4px;
-		font-size: 12px;
+		height: 40px;
+		padding-left: 6px;
+		padding-right: 6px;
+		border-radius: 12px;
+		font-size: 11px;
+		font-weight: 600;
+		line-height: 40px;
 		white-space: nowrap;
 	}
 
@@ -191,6 +212,26 @@ document.addEventListener("DOMContentLoaded", function() {
 		}
 	}
 
+	function applyMobileFrame(tableNode, mobileList, pageActions) {
+		if (!tableNode || !mobileList) {
+			return;
+		}
+
+		var viewportPadding = 12;
+		var holder = tableNode.parentElement || tableNode;
+		var holderRect = holder.getBoundingClientRect();
+		var frameWidth = Math.max(220, window.innerWidth - viewportPadding * 2);
+		var bleed = viewportPadding - holderRect.left;
+
+		mobileList.style.width = frameWidth + "px";
+		mobileList.style.maxWidth = frameWidth + "px";
+		mobileList.style.marginLeft = bleed + "px";
+
+		if (pageActions) {
+			pageActions.classList.add("woltool-mobile-actions");
+		}
+	}
+
 	var titles = [];
 	var table = document.querySelector(".cbi-section-table");
 	var headers = document.querySelectorAll(".cbi-section-table .tr.cbi-section-table-titles .th");
@@ -204,6 +245,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		var pageActions = document.querySelector(".cbi-page-actions");
 		var createBar = document.querySelector(".cbi-section-create");
 		var addButton = document.querySelector(".cbi-section-create .cbi-button-add, .cbi-section-create input.cbi-button-add, .cbi-section-create .cbi-button");
+		var mobileList = null;
 
 		if (table) {
 			ensureFullWidth(table);
@@ -216,7 +258,7 @@ document.addEventListener("DOMContentLoaded", function() {
 			}
 
 			if (!table.nextElementSibling || !table.nextElementSibling.classList || !table.nextElementSibling.classList.contains("woltool-mobile-list")) {
-				var mobileList = document.createElement("div");
+				mobileList = document.createElement("div");
 				mobileList.className = "woltool-mobile-list";
 
 				for (var r = 0; r < rows.length; r++) {
@@ -267,6 +309,8 @@ document.addEventListener("DOMContentLoaded", function() {
 				}
 
 				table.parentNode.insertBefore(mobileList, table.nextSibling);
+			} else {
+				mobileList = table.nextElementSibling;
 			}
 
 			table.classList.add("woltool-mobile-hidden");
@@ -274,10 +318,16 @@ document.addEventListener("DOMContentLoaded", function() {
 
 		if (pageActions && addButton && !pageActions.contains(addButton)) {
 			pageActions.insertBefore(addButton, pageActions.firstChild);
-			pageActions.classList.add("woltool-mobile-actions");
 			if (createBar) {
 				createBar.classList.add("woltool-merged");
 			}
+		}
+
+		if (mobileList) {
+			applyMobileFrame(table, mobileList, pageActions);
+			window.addEventListener("resize", function() {
+				applyMobileFrame(table, mobileList, pageActions);
+			});
 		}
 	}
 });
