@@ -3,46 +3,47 @@ local disp = require "luci.dispatcher"
 
 local wake_url = disp.build_url("admin", "services", "woltool", "wake")
 
-local m = Map("wolhost", translate("唤醒电脑"),
+local m = Map("woltool", translate("唤醒电脑"),
 	translate("点击主机右侧的「唤醒」按钮即可发送唤醒包。可在下方添加或删除主机。") ..
 	string.format([=[
 <style>
-/* 手机端：表格可横向滚动 */
-@media (max-width: 768px) {
-	.cbi-section-table {
-		display: block !important;
-		overflow-x: auto !important;
-		white-space: nowrap !important;
-		-webkit-overflow-scrolling: touch;
+/* 手机端自适应布局 */
+@media (max-width: 600px) {
+	.cbi-section-table tbody tr {
+		display: grid !important;
+		grid-template-columns: auto 1fr auto auto !important;
+		gap: 4px 8px !important;
+		align-items: center !important;
+		padding: 8px !important;
+		border-bottom: 1px solid #ddd !important;
 	}
-	.cbi-section-table thead,
-	.cbi-section-table tbody,
-	.cbi-section-table tr,
-	.cbi-section-table th,
-	.cbi-section-table td {
-		display: inline-block !important;
-		white-space: nowrap !important;
+	.cbi-section-table tbody tr td,
+	.cbi-section-table tbody tr .td {
+		padding: 4px 2px !important;
+		border: none !important;
 	}
+	.cbi-section-table tbody tr td::before { display: none !important; }
 	.cbi-section-table input[type="text"] {
-		width: 80px !important;
-		min-width: 80px !important;
+		width: 100% !important;
+		min-width: 0 !important;
+		box-sizing: border-box !important;
 	}
 	.cbi-section-table input[type="button"] {
-		padding: 2px 6px !important;
-		font-size: 11px !important;
+		padding: 6px 10px !important;
+		font-size: 12px !important;
 	}
 
-	/* 底部按钮一行 */
+	/* 底部按钮自适应 */
 	.cbi-page-actions {
 		display: flex !important;
-		flex-wrap: nowrap !important;
-		gap: 4px !important;
+		flex-wrap: wrap !important;
+		gap: 6px !important;
+		padding: 10px 0 !important;
 	}
-	.cbi-page-actions input {
-		flex: 1 !important;
-		min-width: 0 !important;
-		padding: 6px 2px !important;
-		font-size: 11px !important;
+	.cbi-page-actions input,
+	.cbi-page-actions .cbi-button {
+		flex: 1 1 auto !important;
+		min-width: 70px !important;
 	}
 }
 </style>
