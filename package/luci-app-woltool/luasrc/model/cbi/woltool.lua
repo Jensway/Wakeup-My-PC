@@ -17,12 +17,21 @@ local m = Map("wolhost", translate("唤醒电脑"),
 }
 
 @media (max-width: 768px) {
+	.cbi-section-table {
+		width: 100% !important;
+		max-width: 100% !important;
+	}
+
 	.cbi-section-table .tr.cbi-section-table-titles {
 		display: none;
 	}
 
 	.cbi-section-table .tr {
 		display: block;
+		width: 100% !important;
+		max-width: 100% !important;
+		box-sizing: border-box;
+		overflow: hidden;
 		margin-bottom: 10px;
 		padding: 10px;
 		border: 1px solid #d9d9d9;
@@ -32,10 +41,12 @@ local m = Map("wolhost", translate("唤醒电脑"),
 
 	.cbi-section-table .td {
 		display: grid;
-		grid-template-columns: 4.5rem minmax(0, 1fr);
+		grid-template-columns: 4rem minmax(0, 1fr);
 		column-gap: 8px;
 		align-items: center;
 		width: 100% !important;
+		max-width: 100% !important;
+		box-sizing: border-box;
 		padding: 0 !important;
 		margin: 0 0 8px 0;
 		border: 0 !important;
@@ -58,31 +69,41 @@ local m = Map("wolhost", translate("唤醒电脑"),
 		display: none;
 	}
 
+	.cbi-section-table .td > * {
+		min-width: 0;
+		max-width: 100%;
+	}
+
 	.cbi-section-table .td.mobile-field-cell input[type="text"] {
 		width: 100% !important;
 		min-width: 0;
 	}
 
-	.cbi-section-table .td.mobile-action-cell {
-		display: inline-block;
-		width: calc(50% - 5px) !important;
+	.cbi-section-table .woltool-mobile-action-row {
+		display: flex;
+		gap: 8px;
+		width: 100%;
+		max-width: 100%;
+		margin-top: 2px;
+	}
+
+	.cbi-section-table .woltool-mobile-action-row .td.mobile-action-cell {
+		display: block;
+		flex: 1 1 0;
+		width: auto !important;
+		max-width: calc(50% - 4px) !important;
 		margin: 0;
-		vertical-align: top;
 	}
 
-	.cbi-section-table .td.mobile-action-cell + .td.mobile-action-cell {
-		margin-left: 10px;
-	}
-
-	.cbi-section-table .td.mobile-action-cell::before {
+	.cbi-section-table .woltool-mobile-action-row .td.mobile-action-cell::before {
 		display: none;
 	}
 
-	.cbi-section-table .td.mobile-action-cell .cbi-button,
-	.cbi-section-table .td.mobile-action-cell input[type="button"],
-	.cbi-section-table .td.mobile-action-cell input[type="submit"],
-	.cbi-section-table .td.mobile-action-cell a.cbi-button,
-	.cbi-section-table .td.mobile-action-cell a {
+	.cbi-section-table .woltool-mobile-action-row .td.mobile-action-cell .cbi-button,
+	.cbi-section-table .woltool-mobile-action-row .td.mobile-action-cell input[type="button"],
+	.cbi-section-table .woltool-mobile-action-row .td.mobile-action-cell input[type="submit"],
+	.cbi-section-table .woltool-mobile-action-row .td.mobile-action-cell a.cbi-button,
+	.cbi-section-table .woltool-mobile-action-row .td.mobile-action-cell a {
 		width: 100%;
 		min-width: 0;
 		box-sizing: border-box;
@@ -139,6 +160,19 @@ document.addEventListener("DOMContentLoaded", function() {
 		var pageActions = document.querySelector(".cbi-page-actions");
 		var createBar = document.querySelector(".cbi-section-create");
 		var addButton = document.querySelector(".cbi-section-create .cbi-button-add, .cbi-section-create input.cbi-button-add, .cbi-section-create .cbi-button");
+
+		for (var i = 0; i < rows.length; i++) {
+			var actionCells = rows[i].querySelectorAll(".td.mobile-action-cell");
+			if (actionCells.length >= 2 && !rows[i].querySelector(".woltool-mobile-action-row")) {
+				var actionRow = document.createElement("div");
+				actionRow.className = "woltool-mobile-action-row";
+				rows[i].insertBefore(actionRow, actionCells[0]);
+				for (var a = 0; a < actionCells.length; a++) {
+					actionRow.appendChild(actionCells[a]);
+				}
+			}
+		}
+
 		if (pageActions && addButton && !pageActions.contains(addButton)) {
 			pageActions.insertBefore(addButton, pageActions.firstChild);
 			pageActions.classList.add("woltool-mobile-actions");
