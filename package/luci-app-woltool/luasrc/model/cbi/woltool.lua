@@ -17,41 +17,22 @@ local m = Map("wolhost", translate("唤醒电脑"),
 }
 
 @media (max-width: 768px) {
-	.cbi-section-table {
-		display: block !important;
-		table-layout: fixed !important;
-		width: 100% !important;
-		min-width: 0 !important;
-		max-width: 100% !important;
-		overflow-x: hidden !important;
+	.cbi-section-table.woltool-mobile-hidden {
+		display: none !important;
 	}
 
-	.cbi-section-table .thead,
-	.cbi-section-table .tbody,
-	.cbi-section-table .trow,
-	.cbi-section,
-	.cbi-section-node {
-		display: block !important;
-		width: 100% !important;
-		min-width: 0 !important;
-		max-width: 100% !important;
-		box-sizing: border-box !important;
-	}
-
-	.cbi-section-table .th,
-	.cbi-section-table .td,
-	.cbi-section-table .tr {
-		float: none !important;
-		clear: both;
-	}
-
-	.cbi-section-table .tr.cbi-section-table-titles {
-		display: none;
-	}
-
-	.cbi-section-table .tr {
+	.woltool-mobile-list {
 		display: block;
 		width: 100% !important;
+		min-width: 0 !important;
+		max-width: 100% !important;
+		box-sizing: border-box;
+	}
+
+	.woltool-mobile-card {
+		display: block;
+		width: 100% !important;
+		min-width: 0 !important;
 		max-width: 100% !important;
 		box-sizing: border-box;
 		overflow: hidden;
@@ -62,24 +43,17 @@ local m = Map("wolhost", translate("唤醒电脑"),
 		background: #fafafa;
 	}
 
-	.cbi-section-table .td {
+	.woltool-mobile-field {
 		display: grid;
 		grid-template-columns: 4rem minmax(0, 1fr);
 		column-gap: 8px;
 		align-items: center;
-		width: 100% !important;
-		max-width: 100% !important;
-		box-sizing: border-box;
-		padding: 0 !important;
+		width: 100%;
+		max-width: 100%;
 		margin: 0 0 8px 0;
-		border: 0 !important;
-		text-align: left !important;
-		white-space: normal !important;
 	}
 
-	.cbi-section-table .td::before {
-		content: attr(data-title);
-		display: block;
+	.woltool-mobile-label {
 		margin: 0;
 		font-size: 12px;
 		line-height: 1.2;
@@ -88,21 +62,19 @@ local m = Map("wolhost", translate("唤醒电脑"),
 		white-space: nowrap;
 	}
 
-	.cbi-section-table .td[data-title=""]::before {
-		display: none;
-	}
-
-	.cbi-section-table .td > * {
+	.woltool-mobile-value,
+	.woltool-mobile-value > * {
 		min-width: 0;
 		max-width: 100%;
 	}
 
-	.cbi-section-table .td.mobile-field-cell input[type="text"] {
+	.woltool-mobile-field input[type="text"] {
 		width: 100% !important;
 		min-width: 0;
+		box-sizing: border-box;
 	}
 
-	.cbi-section-table .woltool-mobile-action-row {
+	.woltool-mobile-action-row {
 		display: flex;
 		gap: 8px;
 		width: 100%;
@@ -110,23 +82,17 @@ local m = Map("wolhost", translate("唤醒电脑"),
 		margin-top: 2px;
 	}
 
-	.cbi-section-table .woltool-mobile-action-row .td.mobile-action-cell {
-		display: block;
+	.woltool-mobile-action {
 		flex: 1 1 0;
-		width: auto !important;
-		max-width: calc(50% - 4px) !important;
-		margin: 0;
+		min-width: 0;
+		max-width: calc(50% - 4px);
 	}
 
-	.cbi-section-table .woltool-mobile-action-row .td.mobile-action-cell::before {
-		display: none;
-	}
-
-	.cbi-section-table .woltool-mobile-action-row .td.mobile-action-cell .cbi-button,
-	.cbi-section-table .woltool-mobile-action-row .td.mobile-action-cell input[type="button"],
-	.cbi-section-table .woltool-mobile-action-row .td.mobile-action-cell input[type="submit"],
-	.cbi-section-table .woltool-mobile-action-row .td.mobile-action-cell a.cbi-button,
-	.cbi-section-table .woltool-mobile-action-row .td.mobile-action-cell a {
+	.woltool-mobile-action .cbi-button,
+	.woltool-mobile-action input[type="button"],
+	.woltool-mobile-action input[type="submit"],
+	.woltool-mobile-action a.cbi-button,
+	.woltool-mobile-action a {
 		width: 100%;
 		min-width: 0;
 		box-sizing: border-box;
@@ -160,58 +126,95 @@ local m = Map("wolhost", translate("唤醒电脑"),
 </style>
 <script>
 document.addEventListener("DOMContentLoaded", function() {
+	function ensureFullWidth(node) {
+		if (!node) {
+			return;
+		}
+		node.style.width = "100%";
+		node.style.maxWidth = "100%";
+		node.style.minWidth = "0";
+		node.style.boxSizing = "border-box";
+	}
+
 	var titles = [];
+	var table = document.querySelector(".cbi-section-table");
 	var headers = document.querySelectorAll(".cbi-section-table .tr.cbi-section-table-titles .th");
 	for (var i = 0; i < headers.length; i++) {
 		titles.push(headers[i].textContent.replace(/\s+/g, " ").trim());
 	}
 
 	var rows = document.querySelectorAll(".cbi-section-table .tr:not(.cbi-section-table-titles)");
-	for (var r = 0; r < rows.length; r++) {
-		var cells = rows[r].querySelectorAll(".td");
-		for (var c = 0; c < cells.length; c++) {
-			cells[c].setAttribute("data-title", titles[c] || "");
-			if (c >= cells.length - 2) {
-				cells[c].classList.add("mobile-action-cell");
-			} else {
-				cells[c].classList.add("mobile-field-cell");
-			}
-		}
-	}
 
 	if (window.matchMedia("(max-width: 768px)").matches) {
-		var table = document.querySelector(".cbi-section-table");
 		var pageActions = document.querySelector(".cbi-page-actions");
 		var createBar = document.querySelector(".cbi-section-create");
 		var addButton = document.querySelector(".cbi-section-create .cbi-button-add, .cbi-section-create input.cbi-button-add, .cbi-section-create .cbi-button");
 
 		if (table) {
-			table.style.width = "100%";
-			table.style.maxWidth = "100%";
-			table.style.minWidth = "0";
-			table.style.display = "block";
+			ensureFullWidth(table);
 
 			var parent = table.parentElement;
 			for (var depth = 0; parent && depth < 4; depth++) {
-				parent.style.width = "100%";
-				parent.style.maxWidth = "100%";
-				parent.style.minWidth = "0";
-				parent.style.boxSizing = "border-box";
+				ensureFullWidth(parent);
 				parent.style.overflowX = "hidden";
 				parent = parent.parentElement;
 			}
-		}
 
-		for (var i = 0; i < rows.length; i++) {
-			var actionCells = rows[i].querySelectorAll(".td.mobile-action-cell");
-			if (actionCells.length >= 2 && !rows[i].querySelector(".woltool-mobile-action-row")) {
-				var actionRow = document.createElement("div");
-				actionRow.className = "woltool-mobile-action-row";
-				rows[i].insertBefore(actionRow, actionCells[0]);
-				for (var a = 0; a < actionCells.length; a++) {
-					actionRow.appendChild(actionCells[a]);
+			if (!table.nextElementSibling || !table.nextElementSibling.classList || !table.nextElementSibling.classList.contains("woltool-mobile-list")) {
+				var mobileList = document.createElement("div");
+				mobileList.className = "woltool-mobile-list";
+
+				for (var r = 0; r < rows.length; r++) {
+					var cells = rows[r].querySelectorAll(".td");
+					if (!cells.length) {
+						continue;
+					}
+
+					var card = document.createElement("div");
+					card.className = "woltool-mobile-card";
+
+					for (var c = 0; c < cells.length; c++) {
+						if (c >= cells.length - 2) {
+							continue;
+						}
+
+						var field = document.createElement("div");
+						field.className = "woltool-mobile-field";
+
+						var label = document.createElement("div");
+						label.className = "woltool-mobile-label";
+						label.textContent = titles[c] || "";
+
+						var value = document.createElement("div");
+						value.className = "woltool-mobile-value";
+						value.appendChild(cells[c]);
+
+						field.appendChild(label);
+						field.appendChild(value);
+						card.appendChild(field);
+					}
+
+					if (cells.length >= 2) {
+						var actionRow = document.createElement("div");
+						actionRow.className = "woltool-mobile-action-row";
+
+						for (var a = cells.length - 2; a < cells.length; a++) {
+							var action = document.createElement("div");
+							action.className = "woltool-mobile-action";
+							action.appendChild(cells[a]);
+							actionRow.appendChild(action);
+						}
+
+						card.appendChild(actionRow);
+					}
+
+					mobileList.appendChild(card);
 				}
+
+				table.parentNode.insertBefore(mobileList, table.nextSibling);
 			}
+
+			table.classList.add("woltool-mobile-hidden");
 		}
 
 		if (pageActions && addButton && !pageActions.contains(addButton)) {
