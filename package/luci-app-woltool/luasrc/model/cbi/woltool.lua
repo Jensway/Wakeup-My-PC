@@ -16,89 +16,41 @@ local m = Map("wolhost", translate("唤醒电脑"),
 .cbi-section-table .th:nth-last-child(1),
 .cbi-section-table .th:nth-last-child(2) { width: 1px; white-space: nowrap; }
 
-/* 手机端布局 */
+/* 手机端：表格保持行内布局，隐藏表头，压缩列宽 */
 @media (max-width: 768px) {
-	/* 表格改为卡片式 */
-	.cbi-section-table,
-	.cbi-section-table thead,
-	.cbi-section-table tbody,
-	.cbi-section-table tr,
-	.cbi-section-table th,
-	.cbi-section-table .td,
-	.cbi-section-table td {
-		display: block !important;
-		width: auto !important;
-	}
-	.cbi-section-table thead { display: none !important; }
-	.cbi-section-table tbody tr {
-		margin: 8px 0;
-		padding: 10px;
-		border: 1px solid #ddd;
-		border-radius: 4px;
-		background: #f9f9f9;
-	}
+	.cbi-section-table thead { display: none; }
+	.cbi-section-table tbody tr { display: block !important; white-space: nowrap; }
+	.cbi-section-table tbody tr td,
+	.cbi-section-table tbody tr .td { display: inline-block !important; white-space: nowrap; vertical-align: middle; }
 
-	/* 名称、MAC、接口三列 - 各占一行 */
+	/* 名称列：固定宽度60px，后跟唤醒和删除按钮 */
 	.cbi-section-table tbody tr td:nth-child(1),
+	.cbi-section-table tbody tr .td:nth-child(1) { width: 60px !important; min-width: 60px !important; }
+	/* MAC列：固定宽度90px */
 	.cbi-section-table tbody tr td:nth-child(2),
+	.cbi-section-table tbody tr .td:nth-child(2) { width: 90px !important; min-width: 90px !important; }
+	/* 接口列：固定宽度70px */
 	.cbi-section-table tbody tr td:nth-child(3),
-	.cbi-section-table tbody tr .td:nth-child(1),
-	.cbi-section-table tbody tr .td:nth-child(2),
-	.cbi-section-table tbody tr .td:nth-child(3) {
-		width: 100% !important;
-		padding: 6px 0 !important;
-		border-bottom: 1px solid #eee !important;
-	}
-	.cbi-section-table tbody tr td:nth-child(1)::before { content: "名称: "; font-weight: bold; }
-	.cbi-section-table tbody tr td:nth-child(2)::before { content: "MAC: "; font-weight: bold; }
-	.cbi-section-table tbody tr td:nth-child(3)::before { content: "接口: "; font-weight: bold; }
-	.cbi-section-table tbody tr .td:nth-child(1)::before { content: "名称: "; font-weight: bold; }
-	.cbi-section-table tbody tr .td:nth-child(2)::before { content: "MAC: "; font-weight: bold; }
-	.cbi-section-table tbody tr .td:nth-child(3)::before { content: "接口: "; font-weight: bold; }
-
-	/* 操作列和删除列 - 横向排列在同一行 */
+	.cbi-section-table tbody tr .td:nth-child(3) { width: 70px !important; min-width: 70px !important; }
+	/* 操作列和删除列：紧凑 */
 	.cbi-section-table tbody tr td:nth-child(4),
 	.cbi-section-table tbody tr td:nth-child(5),
 	.cbi-section-table tbody tr .td:nth-child(4),
-	.cbi-section-table tbody tr .td:nth-child(5) {
-		display: inline-block !important;
-		width: auto !important;
-		padding: 6px 4px 6px 0 !important;
-		border: none !important;
-		vertical-align: middle !important;
-	}
-	.cbi-section-table tbody tr td:nth-child(4)::before,
-	.cbi-section-table tbody tr td:nth-child(5)::before,
-	.cbi-section-table tbody tr .td:nth-child(4)::before,
-	.cbi-section-table tbody tr .td:nth-child(5)::before {
-		display: none !important;
-	}
+	.cbi-section-table tbody tr .td:nth-child(5) { width: auto !important; }
 
-	/* 按钮样式 */
-	.cbi-section-table tbody input[type="button"],
-	.cbi-section-table tbody a {
-		margin: 0 2px !important;
-		padding: 6px 10px !important;
-		font-size: 13px !important;
-	}
+	/* 表格可横向滚动 */
+	.cbi-section-table { display: block !important; overflow-x: auto !important; white-space: nowrap !important; }
 
-	/* 底部按钮横向排列 */
-	#maincontent .cbi-section-table + div,
-	.cbi-page-actions {
-		display: flex !important;
-		flex-wrap: wrap !important;
-		gap: 6px !important;
-		padding: 8px 0 !important;
-	}
-	#maincontent .cbi-section-table + div input,
-	#maincontent .cbi-section-table + div button,
-	.cbi-page-actions input,
-	.cbi-page-actions button {
-		margin: 0 !important;
-		padding: 8px 12px !important;
-		font-size: 13px !important;
-	}
-	.cbi-section-table input[type="text"] { max-width: 100%; }
+	/* 输入框全宽显示 */
+	.cbi-section-table input[type="text"] { width: 100% !important; min-width: unset !important; }
+
+	/* 按钮紧凑 */
+	.cbi-section-table input[type="button"],
+	.cbi-section-table a { margin: 0 !important; padding: 4px 8px !important; font-size: 12px !important; white-space: nowrap; }
+
+	/* 底部按钮强制一行 */
+	.cbi-page-actions { display: flex !important; flex-wrap: nowrap !important; gap: 4px !important; }
+	.cbi-page-actions input { flex: 1 !important; min-width: 0 !important; padding: 6px 4px !important; font-size: 12px !important; }
 }
 </style>
 ]=] ..
@@ -127,7 +79,7 @@ function wolWake(btn) {
 	xhr.onerror = function() {
 		btn.disabled = false;
 		btn.value = orig;
-		alert('\u2716 网络请求失败');
+		alert('\u2716 网络请求失���');
 	};
 	var body = 'name=' + encodeURIComponent(name);
 	if (tk) body += '&token=' + encodeURIComponent(tk.value);
