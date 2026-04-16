@@ -197,7 +197,7 @@ if (window.innerWidth <= 768) {
 
 local s = m:section(TypedSection, "host")
 s.template = "cbi/tblsection"
-s.addremove = false  -- 禁用自动删除列，我们在操作列内自定义
+s.addremove = true  -- 启用 LuCI 自动生成添加/删除按钮
 s.anonymous = true
 
 local name_opt = s:option(Value, "name", translate("名称"))
