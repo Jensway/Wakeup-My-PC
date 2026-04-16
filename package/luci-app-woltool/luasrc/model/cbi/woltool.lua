@@ -68,6 +68,15 @@ local m = Map("wolhost", translate("唤醒电脑"),
 		max-width: 100%;
 	}
 
+	.woltool-mobile-value .cbi-value-field,
+	.woltool-mobile-value input[type="text"],
+	.woltool-mobile-value select {
+		width: 100% !important;
+		max-width: 100% !important;
+		min-width: 0 !important;
+		box-sizing: border-box;
+	}
+
 	.woltool-mobile-field input[type="text"] {
 		width: 100% !important;
 		min-width: 0;
@@ -136,6 +145,12 @@ document.addEventListener("DOMContentLoaded", function() {
 		node.style.boxSizing = "border-box";
 	}
 
+	function moveChildren(source, target) {
+		while (source.firstChild) {
+			target.appendChild(source.firstChild);
+		}
+	}
+
 	var titles = [];
 	var table = document.querySelector(".cbi-section-table");
 	var headers = document.querySelectorAll(".cbi-section-table .tr.cbi-section-table-titles .th");
@@ -187,7 +202,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 						var value = document.createElement("div");
 						value.className = "woltool-mobile-value";
-						value.appendChild(cells[c]);
+						moveChildren(cells[c], value);
 
 						field.appendChild(label);
 						field.appendChild(value);
@@ -201,7 +216,7 @@ document.addEventListener("DOMContentLoaded", function() {
 						for (var a = cells.length - 2; a < cells.length; a++) {
 							var action = document.createElement("div");
 							action.className = "woltool-mobile-action";
-							action.appendChild(cells[a]);
+							moveChildren(cells[a], action);
 							actionRow.appendChild(action);
 						}
 
