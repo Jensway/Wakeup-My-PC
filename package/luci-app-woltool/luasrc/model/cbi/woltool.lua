@@ -23,10 +23,11 @@ local m = Map("wolhost", translate("唤醒电脑"),
 
 	.woltool-mobile-list {
 		display: block;
-		width: 100% !important;
+		width: calc(100% + 12px) !important;
 		min-width: 0 !important;
-		max-width: 100% !important;
+		max-width: calc(100% + 12px) !important;
 		box-sizing: border-box;
+		margin: 0 -6px;
 	}
 
 	.woltool-mobile-card {
@@ -36,29 +37,29 @@ local m = Map("wolhost", translate("唤醒电脑"),
 		max-width: 100% !important;
 		box-sizing: border-box;
 		overflow: hidden;
-		margin-bottom: 10px;
-		padding: 10px;
-		border: 1px solid #d9d9d9;
-		border-radius: 8px;
-		background: #fafafa;
+		margin-bottom: 12px;
+		padding: 12px;
+		border: 1px solid #e4e7ee;
+		border-radius: 12px;
+		background: #ffffff;
+		box-shadow: 0 6px 18px rgba(28, 39, 76, 0.06);
 	}
 
 	.woltool-mobile-field {
-		display: grid;
-		grid-template-columns: 4rem minmax(0, 1fr);
-		column-gap: 8px;
-		align-items: center;
+		display: block;
 		width: 100%;
 		max-width: 100%;
-		margin: 0 0 8px 0;
+		margin: 0 0 12px 0;
 	}
 
 	.woltool-mobile-label {
-		margin: 0;
-		font-size: 12px;
-		line-height: 1.2;
+		display: block;
+		margin: 0 0 6px 0;
+		font-size: 11px;
+		line-height: 1.3;
 		font-weight: 600;
-		color: #666;
+		color: #667085;
+		letter-spacing: 0.02em;
 		white-space: nowrap;
 	}
 
@@ -77,6 +78,13 @@ local m = Map("wolhost", translate("唤醒电脑"),
 		box-sizing: border-box;
 	}
 
+	.woltool-mobile-value input[type="text"] {
+		height: 40px;
+		padding-left: 10px;
+		padding-right: 10px;
+		border-radius: 10px;
+	}
+
 	.woltool-mobile-field input[type="text"] {
 		width: 100% !important;
 		min-width: 0;
@@ -84,17 +92,23 @@ local m = Map("wolhost", translate("唤醒电脑"),
 	}
 
 	.woltool-mobile-action-row {
-		display: flex;
-		gap: 8px;
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 10px;
 		width: 100%;
 		max-width: 100%;
-		margin-top: 2px;
+		margin-top: 4px;
 	}
 
 	.woltool-mobile-action {
-		flex: 1 1 0;
 		min-width: 0;
-		max-width: calc(50% - 4px);
+		max-width: 100%;
+	}
+
+	.woltool-mobile-action > * {
+		display: block;
+		width: 100%;
+		margin: 0 !important;
 	}
 
 	.woltool-mobile-action .cbi-button,
@@ -105,8 +119,34 @@ local m = Map("wolhost", translate("唤醒电脑"),
 		width: 100%;
 		min-width: 0;
 		box-sizing: border-box;
+		display: block;
+		height: 40px;
+		padding: 0 12px;
+		border-radius: 10px;
 		text-align: center;
 		white-space: nowrap;
+		font-weight: 600;
+		line-height: 40px;
+	}
+
+	.woltool-mobile-action-primary .cbi-button,
+	.woltool-mobile-action-primary input[type="button"],
+	.woltool-mobile-action-primary input[type="submit"],
+	.woltool-mobile-action-primary a.cbi-button,
+	.woltool-mobile-action-primary a {
+		background: #5b6ce1 !important;
+		border-color: #5b6ce1 !important;
+		color: #ffffff !important;
+	}
+
+	.woltool-mobile-action-danger .cbi-button,
+	.woltool-mobile-action-danger input[type="button"],
+	.woltool-mobile-action-danger input[type="submit"],
+	.woltool-mobile-action-danger a.cbi-button,
+	.woltool-mobile-action-danger a {
+		background: #ff4d73 !important;
+		border-color: #ff4d73 !important;
+		color: #ffffff !important;
 	}
 
 	.cbi-page-actions,
@@ -215,7 +255,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 						for (var a = cells.length - 2; a < cells.length; a++) {
 							var action = document.createElement("div");
-							action.className = "woltool-mobile-action";
+							action.className = "woltool-mobile-action " + (a === cells.length - 2 ? "woltool-mobile-action-primary" : "woltool-mobile-action-danger");
 							moveChildren(cells[a], action);
 							actionRow.appendChild(action);
 						}
