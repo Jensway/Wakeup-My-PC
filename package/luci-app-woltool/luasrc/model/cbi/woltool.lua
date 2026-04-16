@@ -49,8 +49,8 @@ local m = Map("wolhost", translate("唤醒电脑"),
 
 	.woltool-mobile-field {
 		display: grid;
-		grid-template-columns: 62px minmax(0, 1fr);
-		column-gap: 10px;
+		grid-template-columns: 50px minmax(0, 1fr);
+		column-gap: 6px;
 		align-items: center;
 		width: 100%;
 		max-width: 100%;
@@ -73,6 +73,15 @@ local m = Map("wolhost", translate("唤醒电脑"),
 	.woltool-mobile-value > * {
 		min-width: 0;
 		max-width: 100%;
+	}
+
+	.woltool-mobile-value {
+		width: 90%;
+		justify-self: start;
+	}
+
+	.woltool-mobile-value > * {
+		width: 100%;
 	}
 
 	.woltool-mobile-value .cbi-value-field,
@@ -103,7 +112,7 @@ local m = Map("wolhost", translate("唤醒电脑"),
 	.woltool-mobile-action-row {
 		display: grid;
 		grid-template-columns: repeat(2, minmax(0, 1fr));
-		gap: 12px;
+		gap: 10px;
 		width: 100%;
 		max-width: 100%;
 		margin-top: 10px;
@@ -111,13 +120,15 @@ local m = Map("wolhost", translate("唤醒电脑"),
 
 	.woltool-mobile-action {
 		display: flex;
+		width: 100%;
 		min-width: 0;
 		max-width: 100%;
 	}
 
 	.woltool-mobile-action > * {
 		display: block;
-		width: 100%;
+		flex: 1 1 auto;
+		width: 100% !important;
 		margin: 0 !important;
 	}
 
@@ -126,12 +137,13 @@ local m = Map("wolhost", translate("唤醒电脑"),
 	.woltool-mobile-action input[type="submit"],
 	.woltool-mobile-action a.cbi-button,
 	.woltool-mobile-action a {
-		width: 100%;
+		width: 100% !important;
+		max-width: 100% !important;
 		min-width: 0;
 		box-sizing: border-box;
 		display: block;
 		height: 44px;
-		padding: 0 16px;
+		padding: 0 18px;
 		border-radius: 14px;
 		text-align: center;
 		white-space: nowrap;
