@@ -18,8 +18,19 @@ local m = Map("wolhost", translate("唤醒电脑"),
 
 @media (max-width: 768px) {
 	.cbi-section-table {
+		display: block !important;
+		table-layout: fixed !important;
 		width: 100% !important;
+		min-width: 0 !important;
 		max-width: 100% !important;
+		overflow-x: hidden !important;
+	}
+
+	.cbi-section-table .th,
+	.cbi-section-table .td,
+	.cbi-section-table .tr {
+		float: none !important;
+		clear: both;
 	}
 
 	.cbi-section-table .tr.cbi-section-table-titles {
