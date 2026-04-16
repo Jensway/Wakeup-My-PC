@@ -43,22 +43,26 @@ local m = Map("wolhost", translate("唤醒电脑"),
 		padding: 14px;
 		border: 1px solid #e7ebf3;
 		border-radius: 16px;
-		background: #ffffff;
+		background: linear-gradient(180deg, #ffffff 0%, #fbfcff 100%);
 		box-shadow: 0 10px 30px rgba(28, 39, 76, 0.08);
 	}
 
 	.woltool-mobile-field {
-		display: block;
+		display: grid;
+		grid-template-columns: 62px minmax(0, 1fr);
+		column-gap: 10px;
+		align-items: center;
 		width: 100%;
 		max-width: 100%;
-		margin: 0 0 14px 0;
+		margin: 0 0 12px 0;
 	}
 
 	.woltool-mobile-label {
-		display: block;
-		margin: 0 0 6px 0;
+		display: flex;
+		align-items: center;
+		margin: 0;
 		font-size: 11px;
-		line-height: 1.3;
+		line-height: 1.25;
 		font-weight: 600;
 		color: #667085;
 		letter-spacing: 0.02em;
@@ -81,10 +85,13 @@ local m = Map("wolhost", translate("唤醒电脑"),
 	}
 
 	.woltool-mobile-value input[type="text"] {
-		height: 42px;
-		padding-left: 12px;
-		padding-right: 12px;
+		height: 44px;
+		padding-left: 14px;
+		padding-right: 14px;
 		border-radius: 12px;
+		border-color: #e3e8f3;
+		background: #f8faff;
+		box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.03);
 	}
 
 	.woltool-mobile-field input[type="text"] {
@@ -96,13 +103,14 @@ local m = Map("wolhost", translate("唤醒电脑"),
 	.woltool-mobile-action-row {
 		display: grid;
 		grid-template-columns: repeat(2, minmax(0, 1fr));
-		gap: 10px;
+		gap: 12px;
 		width: 100%;
 		max-width: 100%;
-		margin-top: 8px;
+		margin-top: 10px;
 	}
 
 	.woltool-mobile-action {
+		display: flex;
 		min-width: 0;
 		max-width: 100%;
 	}
@@ -122,13 +130,16 @@ local m = Map("wolhost", translate("唤醒电脑"),
 		min-width: 0;
 		box-sizing: border-box;
 		display: block;
-		height: 40px;
-		padding: 0 12px;
-		border-radius: 12px;
+		height: 44px;
+		padding: 0 16px;
+		border-radius: 14px;
 		text-align: center;
 		white-space: nowrap;
 		font-weight: 600;
-		line-height: 40px;
+		font-size: 13px;
+		line-height: 1.15;
+		appearance: none;
+		-webkit-appearance: none;
 	}
 
 	.woltool-mobile-action-primary .cbi-button,
@@ -139,6 +150,7 @@ local m = Map("wolhost", translate("唤醒电脑"),
 		background: #5b6ce1 !important;
 		border-color: #5b6ce1 !important;
 		color: #ffffff !important;
+		box-shadow: 0 10px 20px rgba(91, 108, 225, 0.22);
 	}
 
 	.woltool-mobile-action-danger .cbi-button,
@@ -149,6 +161,14 @@ local m = Map("wolhost", translate("唤醒电脑"),
 		background: #ff4d73 !important;
 		border-color: #ff4d73 !important;
 		color: #ffffff !important;
+		box-shadow: 0 10px 20px rgba(255, 77, 115, 0.2);
+	}
+
+	.woltool-mobile-action a.cbi-button,
+	.woltool-mobile-action a {
+		display: flex !important;
+		align-items: center;
+		justify-content: center;
 	}
 
 	.cbi-page-actions,
@@ -179,14 +199,30 @@ local m = Map("wolhost", translate("唤醒电脑"),
 	.cbi-page-actions a.cbi-button {
 		flex: 1 1 0;
 		min-width: 0;
-		height: 40px;
-		padding-left: 6px;
-		padding-right: 6px;
-		border-radius: 12px;
+		height: 42px;
+		padding-left: 8px;
+		padding-right: 8px;
+		border-radius: 14px;
 		font-size: 11px;
 		font-weight: 600;
-		line-height: 40px;
+		line-height: 1.15;
 		white-space: nowrap;
+		appearance: none;
+		-webkit-appearance: none;
+	}
+
+	.cbi-page-actions a.cbi-button,
+	.cbi-page-actions .cbi-button {
+		display: flex !important;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.cbi-page-actions input[type="submit"],
+	.cbi-page-actions input[type="reset"],
+	.cbi-page-actions input[type="button"] {
+		padding-top: 0 !important;
+		padding-bottom: 0 !important;
 	}
 
 	.cbi-section-create.woltool-merged {
