@@ -26,6 +26,18 @@ local m = Map("wolhost", translate("唤醒电脑"),
 		overflow-x: hidden !important;
 	}
 
+	.cbi-section-table .thead,
+	.cbi-section-table .tbody,
+	.cbi-section-table .trow,
+	.cbi-section,
+	.cbi-section-node {
+		display: block !important;
+		width: 100% !important;
+		min-width: 0 !important;
+		max-width: 100% !important;
+		box-sizing: border-box !important;
+	}
+
 	.cbi-section-table .th,
 	.cbi-section-table .td,
 	.cbi-section-table .tr {
@@ -168,9 +180,27 @@ document.addEventListener("DOMContentLoaded", function() {
 	}
 
 	if (window.matchMedia("(max-width: 768px)").matches) {
+		var table = document.querySelector(".cbi-section-table");
 		var pageActions = document.querySelector(".cbi-page-actions");
 		var createBar = document.querySelector(".cbi-section-create");
 		var addButton = document.querySelector(".cbi-section-create .cbi-button-add, .cbi-section-create input.cbi-button-add, .cbi-section-create .cbi-button");
+
+		if (table) {
+			table.style.width = "100%";
+			table.style.maxWidth = "100%";
+			table.style.minWidth = "0";
+			table.style.display = "block";
+
+			var parent = table.parentElement;
+			for (var depth = 0; parent && depth < 4; depth++) {
+				parent.style.width = "100%";
+				parent.style.maxWidth = "100%";
+				parent.style.minWidth = "0";
+				parent.style.boxSizing = "border-box";
+				parent.style.overflowX = "hidden";
+				parent = parent.parentElement;
+			}
+		}
 
 		for (var i = 0; i < rows.length; i++) {
 			var actionCells = rows[i].querySelectorAll(".td.mobile-action-cell");
