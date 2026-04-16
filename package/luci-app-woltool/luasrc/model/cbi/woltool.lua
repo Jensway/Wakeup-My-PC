@@ -1,5 +1,3 @@
-module("luci.model.cbi.woltool", package.seeall)
-
 local util = require "luci.util"
 local disp = require "luci.dispatcher"
 
